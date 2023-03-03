@@ -1,0 +1,13 @@
+#pragma once
+#include "GameObjectComponent.h"
+
+
+class EngineStatsComponent : public GameObjectComponent
+{
+private:
+	const float Timeout = 1.0f;
+	float TimeLeft = 0.0f;
+
+public:
+	void OnUpdate(float deltaTime) override;
+};
