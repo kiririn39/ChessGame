@@ -57,15 +57,15 @@ GameObject* Engine::CreateGameObject()
 	return instance;
 }
 
-void Engine::DestroyMarkedObjects()
+void Engine::DestroyObjects()
 {
-	auto flaggedComponents = Components | std::views::filter([](const GameObjectComponent* component)
-		{
-			return component->IsFlaggedForDestruction;
-		});
-
-	for (auto component : flaggedComponents)
-		component->OnDestroy();
+	// auto flaggedComponents = Components | std::views::take_while filter([](const GameObjectComponent* component)
+	// 	{
+	// 		return component->IsFlaggedForDestruction;
+	// 	});
+	//
+	// for (auto component : flaggedComponents)
+	// 	component->OnDestroy();
 
 	const auto componentIterator = std::ranges::find_if(Components, [](const GameObjectComponent* component)
 		{
@@ -86,6 +86,8 @@ void Engine::DestroyMarkedObjects()
 
 	while (emptyObject != GameObjects.end())
 	{
+
+
 		GameObjects.erase(emptyObject);
 		delete* emptyObject;
 	}

@@ -6,7 +6,6 @@
 #include "GameObject.h"
 
 
-
 class Engine
 {
 public:
@@ -36,7 +35,7 @@ private:
 	std::vector<GameObjectComponent*> Components{};
 
 	Engine() = default;
-	void DestroyMarkedObjects();
+	void DestroyObjects();
 };
 
 template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
