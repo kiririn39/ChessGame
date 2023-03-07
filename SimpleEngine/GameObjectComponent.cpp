@@ -3,7 +3,7 @@
 
 void GameObjectComponent::InitializeInstance(GameObject* owner)
 {
-	OwnerObject = owner;
+    OwnerObject = owner;
 }
 
 void GameObjectComponent::OnInitialize()
@@ -18,7 +18,12 @@ void GameObjectComponent::OnDestroy()
 {
 }
 
+void GameObjectComponent::Destroy()
+{
+    IsFlaggedForDestruction = true;
+}
+
 GameObject* GameObjectComponent::GetOwner() const
 {
-	return OwnerObject;
+    return OwnerObject;
 }
