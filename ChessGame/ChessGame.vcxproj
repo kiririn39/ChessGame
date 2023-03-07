@@ -156,7 +156,6 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="Components\EngineStatsComponent.h" />
     <ClInclude Include="Piece.h" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\board_plain_04.png" />
