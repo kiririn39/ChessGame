@@ -1,14 +1,17 @@
 #pragma once
+#include "Object.h"
 
 class GameObject;
 
-class GameObjectComponent
+class GameObjectComponent : public Object
 {
 private:
-    GameObject* OwnerObject = nullptr;
     bool IsInitialized = false;
     bool IsFlaggedForDestruction = false;
     friend class Engine;
+
+protected:
+    GameObject* OwnerObject = nullptr;
 
 public:
     virtual ~GameObjectComponent() = default;

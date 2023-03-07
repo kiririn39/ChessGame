@@ -1,5 +1,6 @@
 #include "Engine.h"
 
+#include <algorithm>
 #include <cassert>
 #include <raylib.h>
 #include <ranges>
@@ -45,6 +46,8 @@ void Engine::Run()
             component->OnUpdate(deltaTime);
 
         EndDrawing();
+
+        DestroyObjects();
     }
 
     CloseWindow();
@@ -60,36 +63,26 @@ GameObject* Engine::CreateGameObject()
 
 void Engine::DestroyObjects()
 {
-    auto flaggedComponents = Components | std::views::filter([](const GameObjectComponent* component)
+    auto flaggedComponents = std::views::filter([](const GameObjectComponent* component)
     {
         return component->IsFlaggedForDestruction;
     });
 
-    for (auto component : flaggedComponents)
+    for (auto component : Components | flaggedComponents)
+    {
+        component->GetOwner()->ComponentsCount--;
         component->OnDestroy();
-
-    const auto deleteIterator = std::ranges::find_if(Components, [](const GameObjectComponent* component)
-    {
-        return component->IsFlaggedForDestruction;
-    });
-
-    while (deleteIterator != Components.end())
-    {
-        (*deleteIterator)->GetOwner()->ComponentsCount--;
-        Components.erase(deleteIterator);
-        delete *deleteIterator;
     }
 
-    const auto emptyObjects = std::ranges::find_if(GameObjects, [](const GameObject* object)
+    Components.erase(std::ranges::remove_if(Components, [](const GameObjectComponent* component)
+    {
+        return component->IsFlaggedForDestruction;
+    }).begin(), Components.end());
+
+    GameObjects.erase(std::ranges::remove_if(GameObjects, [](const GameObject* object)
     {
         return object->ComponentsCount <= 0;
-    });
-
-    while (emptyObjects != GameObjects.end())
-    {
-        GameObjects.erase(emptyObjects);
-        delete *emptyObjects;
-    }
+    }).begin(), GameObjects.end());
 }
 
 bool Engine::IsValid(GameObject* object) const

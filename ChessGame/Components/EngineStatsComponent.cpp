@@ -6,20 +6,32 @@
 
 void EngineStatsComponent::OnUpdate(float deltaTime)
 {
-	TimeLeft -= deltaTime;
+    TimeLeft -= deltaTime;
 
-	static int componentsCount;
-	static int gameObjectsCount;
+    static int componentsCount;
+    static int gameObjectsCount;
 
-	if (TimeLeft <= 0.0f)
-	{
-		TimeLeft = Timeout;
+    if (TimeLeft <= 0.0f)
+    {
+        TimeLeft = Timeout;
 
-		const auto* engine = Engine::GetInstance();
+        auto* engine = Engine::GetInstance();
 
-		componentsCount = engine->GetComponentsCount();
-		gameObjectsCount = engine->GetGameObjectsCount();
-	}
+        if (OwnerObject->GetChildrenCount() == 0)
+        {
+            auto object = engine->CreateGameObject();
+            object->AddComponentOfType<EngineStatsComponent>();
 
-	DrawText(TextFormat("Gameobjects:%d\nComponents:%d\nFps:%d", gameObjectsCount, componentsCount, GetFPS()), 20, 20, 20, LIGHTGRAY);
+            OwnerObject->AddChildGameObject(object);
+        }
+
+        componentsCount = engine->GetComponentsCount();
+        gameObjectsCount = engine->GetGameObjectsCount();
+
+        if (OwnerObject->GetParent() == nullptr && gameObjectsCount >= 59)
+            OwnerObject->GetChildGameObject(0)->Destroy();
+    }
+
+    DrawText(TextFormat("Gameobjects:%d\nComponents:%d\nFps:%d", gameObjectsCount, componentsCount, GetFPS()), 20, 20,
+             20, LIGHTGRAY);
 }
