@@ -36,7 +36,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameObjectComponent.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="Transform.h" />
+    <ClInclude Include="raymath.h" />
     <ClInclude Include="TransformComponent.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -28,7 +28,7 @@ void EngineStatsComponent::OnUpdate(float deltaTime)
         componentsCount = engine->GetComponentsCount();
         gameObjectsCount = engine->GetGameObjectsCount();
 
-        if (OwnerObject->GetParent() == nullptr && gameObjectsCount >= 59)
+        if (OwnerObject->GetParent() == nullptr && gameObjectsCount >= 1000)
             OwnerObject->GetChildGameObject(0)->Destroy();
     }
 
