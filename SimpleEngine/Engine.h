@@ -2,61 +2,60 @@
 #include <type_traits>
 #include <vector>
 
-#include "GameObjectComponent.h"
-#include "GameObject.h"
-
+class GameObject;
+class GameObjectComponent;
 
 class Engine
 {
 public:
-	static Engine* GetInstance();
+    static Engine* GetInstance();
 
-	void Run();
+    void Run();
 
-	GameObject* CreateGameObject();
+    GameObject* CreateGameObject();
 
-	template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-	T* GetComponent(GameObject* owner);
+    template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
+    T* GetComponent(GameObject* owner);
 
-	template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-	T* AddComponent(GameObject* owner);
+    template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
+    T* AddComponent(GameObject* owner);
 
-	bool IsValid(GameObject* object) const;
-	bool IsValid(GameObjectComponent* component) const;
+    bool IsValid(GameObject* object) const;
+    bool IsValid(GameObjectComponent* component) const;
 
-	void Destroy(GameObject* object);
+    void Destroy(GameObject* object);
 
-	[[nodiscard]] size_t GetComponentsCount() const;
-	[[nodiscard]] size_t GetGameObjectsCount() const;
+    [[nodiscard]] size_t GetComponentsCount() const;
+    [[nodiscard]] size_t GetGameObjectsCount() const;
 
 private:
-	inline static Engine* Instance = nullptr;
-	std::vector<GameObject*> GameObjects{};
-	std::vector<GameObjectComponent*> Components{};
+    inline static Engine* Instance = nullptr;
+    std::vector<GameObject*> GameObjects{};
+    std::vector<GameObjectComponent*> Components{};
 
-	Engine() = default;
-	void DestroyObjects();
+    Engine() = default;
+    void DestroyObjects();
 };
 
 template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
 T* Engine::GetComponent(GameObject* owner)
 {
-	const auto match = Components | std::ranges::find_if([owner](const GameObjectComponent* component)
-		{
-			return component->GetOwner() == owner;
-		});
+    const auto match = Components | std::ranges::find_if([owner](const GameObjectComponent* component)
+    {
+        return component->GetOwner() == owner;
+    });
 
-	return match;
+    return match;
 }
 
 template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
 T* Engine::AddComponent(GameObject* owner)
 {
-	T* instance = new T();
+    T* instance = new T();
 
-	instance->InitializeInstance(owner);
-	Components.push_back(instance);
-	owner->ComponentsCount++;
+    instance->InitializeInstance(owner);
+    Components.push_back(instance);
+    owner->ComponentsCount++;
 
-	return instance;
+    return instance;
 }

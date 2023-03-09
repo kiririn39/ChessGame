@@ -3,6 +3,7 @@
 #include <raylib.h>
 
 #include "Engine.h"
+#include "GameObject.h"
 
 void EngineStatsComponent::OnUpdate(float deltaTime)
 {

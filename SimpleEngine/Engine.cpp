@@ -1,9 +1,11 @@
 #include "Engine.h"
 
 #include <algorithm>
-#include <cassert>
 #include <raylib.h>
 #include <ranges>
+
+#include "GameObject.h"
+#include "GameObjectComponent.h"
 
 Engine* Engine::GetInstance()
 {

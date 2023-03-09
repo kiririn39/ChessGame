@@ -1,6 +1,5 @@
 #include "TransformComponent.h"
 
-#include <cmath>
 #include "GameObject.h"
 #include "raymath.h"
 
@@ -89,9 +88,9 @@ Vector3 TransformComponent::SetLocalRotation(Vector3 value)
 
 Vector3 TransformComponent::SetWorldRotation(Vector3 value)
 {
-    Vector3 worldRotation = GetWorldRotation();
-    Quaternion valueQuaternion = QuaternionFromEuler(value.x, value.y, value.z);
-    Quaternion worldQuaternion = QuaternionFromEuler(worldRotation.x, worldRotation.y, worldRotation.z);
+    const Vector3 worldRotation = GetWorldRotation();
+    const Quaternion valueQuaternion = QuaternionFromEuler(value.x, value.y, value.z);
+    const Quaternion worldQuaternion = QuaternionFromEuler(worldRotation.x, worldRotation.y, worldRotation.z);
 
     const auto distance = QuaternionSubtract(valueQuaternion, worldQuaternion);
 

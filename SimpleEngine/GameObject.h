@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "Object.h"
-
 class GameObjectComponent;
 class Engine;
 
