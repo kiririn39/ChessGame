@@ -1,44 +1,10 @@
-#pragma once
-#include <type_traits>
-#include <vector>
-
-class GameObject;
-class GameObjectComponent;
-
-class Engine
-{
-public:
-    static Engine* GetInstance();
-
-    void Run();
-
-    GameObject* CreateGameObject();
-
-    template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-    T* GetComponent(GameObject* owner);
-
-    template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-    T* AddComponent(GameObject* owner);
-
-    bool IsValid(GameObject* object) const;
-    bool IsValid(GameObjectComponent* component) const;
-
-    void Destroy(GameObject* object);
-
-    [[nodiscard]] size_t GetComponentsCount() const;
-    [[nodiscard]] size_t GetGameObjectsCount() const;
-
-private:
-    inline static Engine* Instance = nullptr;
-    std::vector<GameObject*> GameObjects{};
-    std::vector<GameObjectComponent*> Components{};
-
-    Engine() = default;
-    void DestroyObjects();
-};
+﻿#pragma once
+#include "EngineCore.h"
+#include "GameObject.h"
+#include "GameObjectComponent.h"
 
 template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-T* Engine::GetComponent(GameObject* owner)
+T* EngineCore::GetComponent(GameObject* owner)
 {
     const auto match = Components | std::ranges::find_if([owner](const GameObjectComponent* component)
     {
@@ -49,7 +15,7 @@ T* Engine::GetComponent(GameObject* owner)
 }
 
 template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-T* Engine::AddComponent(GameObject* owner)
+T* EngineCore::AddComponent(GameObject* owner)
 {
     T* instance = new T();
 
@@ -58,4 +24,17 @@ T* Engine::AddComponent(GameObject* owner)
     owner->ComponentsCount++;
 
     return instance;
+}
+
+
+template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
+T* GameObject::GetComponentOfType()
+{
+    return EngineCore::GetInstance()->GetComponent<T>(this);
+}
+
+template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
+void GameObject::AddComponentOfType()
+{
+    EngineCore::GetInstance()->AddComponent<T>(this);
 }

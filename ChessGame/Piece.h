@@ -1,6 +1,6 @@
 #pragma once
-#include <raylib.h>
-#include "GameObject.h"
+#include "../External/raylib-4.2.0/src/raylib.h"
+#include "../SimpleEngine/GameObject.h"
 
 class Piece : public GameObject
 {

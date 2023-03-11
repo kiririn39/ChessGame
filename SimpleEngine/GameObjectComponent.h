@@ -8,7 +8,7 @@ class GameObjectComponent : public Object
 private:
     bool IsInitialized = false;
     bool IsFlaggedForDestruction = false;
-    friend class Engine;
+    friend class EngineCore;
 
 protected:
     GameObject* OwnerObject = nullptr;

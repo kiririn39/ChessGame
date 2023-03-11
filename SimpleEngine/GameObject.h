@@ -5,7 +5,7 @@
 
 #include "Object.h"
 class GameObjectComponent;
-class Engine;
+class EngineCore;
 
 class GameObject : public Object
 {
@@ -15,7 +15,7 @@ private:
     GameObject* Parent = nullptr;
     std::vector<GameObject*> Children{};
 
-    friend class Engine;
+    friend class EngineCore;
 
 public:
     virtual ~GameObject() = default;
@@ -35,15 +35,3 @@ public:
     [[nodiscard]] GameObject* GetParent() const;
     [[nodiscard]] auto GetChildren() const;
 };
-
-template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-T* GameObject::GetComponentOfType()
-{
-    return Engine::GetInstance()->GetComponent<T>(this);
-}
-
-template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-void GameObject::AddComponentOfType()
-{
-    Engine::GetInstance()->AddComponent<T>(this);
-}

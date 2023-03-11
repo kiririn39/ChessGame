@@ -1,11 +1,11 @@
 #pragma once
-#include "Engine.h"
-#include "GameObject.h"
-#include "Components/EngineStatsComponent.h"
+#include <Engine.h>
+#include <Components/EngineStatsComponent.h>
+
 
 int main()
 {
-    const auto engine = Engine::GetInstance();
+    const auto engine = EngineCore::GetInstance();
 
     const auto object = engine->CreateGameObject();
     object->AddComponentOfType<EngineStatsComponent>();

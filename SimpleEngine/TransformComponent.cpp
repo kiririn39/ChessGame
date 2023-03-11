@@ -1,8 +1,6 @@
 #include "TransformComponent.h"
 
 #include "GameObject.h"
-#include "raymath.h"
-
 
 Vector3 TransformComponent::ComputeLocalValue(Vector3 (TransformComponent::* parentWorldValueGetter)() const,
                                               Vector3 localValue) const

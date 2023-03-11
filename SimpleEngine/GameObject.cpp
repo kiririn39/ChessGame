@@ -3,11 +3,11 @@
 #include <cassert>
 #include <ranges>
 
-#include "Engine.h"
+#include "EngineCore.h"
 
 void GameObject::Destroy()
 {
-    Engine::GetInstance()->Destroy(this);
+    EngineCore::GetInstance()->Destroy(this);
 }
 
 void GameObject::AddChildGameObject(GameObject* object)

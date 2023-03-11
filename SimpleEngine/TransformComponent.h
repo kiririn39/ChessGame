@@ -1,8 +1,7 @@
 #pragma once
-#include <raylib.h>
 
 #include "GameObjectComponent.h"
-
+#include "raymath.h"
 
 class TransformComponent : public GameObjectComponent
 {
@@ -13,9 +12,6 @@ private:
 
     [[nodiscard]] Vector3 ComputeLocalValue(Vector3 (TransformComponent::* parentWorldValueGetter)() const,
                                             Vector3 localValue) const;
-
-    [[nodiscard]] Quaternion ComputeLocalValue(Quaternion (TransformComponent::* parentWorldValueGetter)() const,
-                                               Quaternion localValue) const;
 
 public:
     Vector3 GetLocalPosition() const;

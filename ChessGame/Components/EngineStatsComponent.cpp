@@ -1,9 +1,8 @@
 #include "EngineStatsComponent.h"
 
-#include <raylib.h>
-
-#include "Engine.h"
+#include "EngineCore.h"
 #include "GameObject.h"
+#include "raylib.h"
 
 void EngineStatsComponent::OnUpdate(float deltaTime)
 {
@@ -16,7 +15,7 @@ void EngineStatsComponent::OnUpdate(float deltaTime)
     {
         TimeLeft = Timeout;
 
-        auto* engine = Engine::GetInstance();
+        auto* engine = EngineCore::GetInstance();
 
         if (OwnerObject->GetChildrenCount() == 0)
         {
