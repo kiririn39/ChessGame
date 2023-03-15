@@ -26,7 +26,7 @@ public:
     T* GetComponentOfType();
 
     template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-    void AddComponentOfType();
+    T* AddComponentOfType();
 
     void AddChildGameObject(GameObject* object);
     void RemoveChildGameObject(GameObject* object);

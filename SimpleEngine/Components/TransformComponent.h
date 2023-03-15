@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameObjectComponent.h"
-#include "raymath.h"
+#include "raylib.h"
 
 class TransformComponent : public GameObjectComponent
 {

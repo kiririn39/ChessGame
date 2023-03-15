@@ -79,6 +79,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\SimpleEngine;$(SolutionDir)\ChessGame;$(SolutionDir)\External\raylib-4.2.0\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableModules>true</EnableModules>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -96,6 +97,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\SimpleEngine;$(SolutionDir)\ChessGame;$(SolutionDir)\External\raylib-4.2.0\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableModules>true</EnableModules>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,6 +115,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>true</EnableModules>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\SimpleEngine;$(SolutionDir)\ChessGame;$(SolutionDir)\External\raylib-4.2.0\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,6 +133,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\SimpleEngine;$(SolutionDir)\ChessGame;$(SolutionDir)\External\raylib-4.2.0\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableModules>true</EnableModules>
+      <PreprocessToFile>false</PreprocessToFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,10 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Board.cpp" />
     <ClCompile Include="ChessGame.cpp" />
     <ClCompile Include="Components\EngineStatsComponent.cpp" />
-    <ClCompile Include="Piece.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleEngine\SimpleEngine.vcxproj">
@@ -150,9 +152,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Board.h" />
     <ClInclude Include="Components\EngineStatsComponent.h" />
-    <ClInclude Include="Piece.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\board_plain_04.png" />

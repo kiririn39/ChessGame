@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObjectComponent.h"
+#include "Components/GameObjectComponent.h"
 
 class EngineStatsComponent : public GameObjectComponent
 {

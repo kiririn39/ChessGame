@@ -1,6 +1,9 @@
 #pragma once
-#include <Engine.h>
-#include <Components/EngineStatsComponent.h>
+
+#include "GameObjectTemplates.h"
+#include "Components/EngineStatsComponent.h"
+#include "Components/SpriteComponent.h"
+#include "Components/TransformComponent.h"
 
 
 int main()
@@ -9,6 +12,10 @@ int main()
 
     const auto object = engine->CreateGameObject();
     object->AddComponentOfType<EngineStatsComponent>();
+    object->AddComponentOfType<TransformComponent>();
+
+    auto spriteObject = engine->CreateGameObject();
+    auto spriteComponent = spriteObject->AddComponentOfType<SpriteComponent>();
 
     engine->Run();
 }

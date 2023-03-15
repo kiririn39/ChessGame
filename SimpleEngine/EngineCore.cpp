@@ -4,8 +4,8 @@
 #include <ranges>
 
 #include "GameObject.h"
-#include "GameObjectComponent.h"
 #include "raylib.h"
+#include "Components/GameObjectComponent.h"
 
 EngineCore* EngineCore::GetInstance()
 {
