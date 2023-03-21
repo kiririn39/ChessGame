@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="ChessGame.cpp" />
     <ClCompile Include="Components\EngineStatsComponent.cpp" />
+    <ClCompile Include="Components\KeyboardMovementComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleEngine\SimpleEngine.vcxproj">
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\EngineStatsComponent.h" />
+    <ClInclude Include="Components\KeyboardMovementComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\board_plain_04.png" />
