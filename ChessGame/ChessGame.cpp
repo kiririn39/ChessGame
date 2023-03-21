@@ -14,8 +14,10 @@ int main()
     object->AddComponentOfType<EngineStatsComponent>();
     object->AddComponentOfType<TransformComponent>();
 
-    auto spriteObject = engine->CreateGameObject();
+    auto spriteObject = engine->CreateGameObject("GameBoard");
+    spriteObject->AddComponentOfType<TransformComponent>();
     auto spriteComponent = spriteObject->AddComponentOfType<SpriteComponent>();
+    spriteComponent->LoadSpriteFromPath(R"(Resources\board_plain_04.png)");
 
     engine->Run();
 }

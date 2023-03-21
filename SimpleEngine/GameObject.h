@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <string>
 #include <type_traits>
 #include <vector>
 
@@ -16,6 +17,9 @@ private:
     std::vector<GameObject*> Children{};
 
     friend class EngineCore;
+
+public:
+    std::string Name;
 
 public:
     virtual ~GameObject() = default;

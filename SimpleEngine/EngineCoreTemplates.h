@@ -8,7 +8,7 @@ T* EngineCore::GetComponent(GameObject* owner)
 {
     auto match = std::ranges::find_if(Components, [owner](const GameObjectComponent* component)
     {
-        return component->GetOwner() == owner;
+        return component->GetOwner() == owner && dynamic_cast<const T*>(component) != nullptr;
     });
 
     if (match == Components.end())

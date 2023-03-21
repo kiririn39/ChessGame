@@ -6,12 +6,12 @@ class GameObject;
 class GameObjectComponent : public Object
 {
 private:
-    bool IsInitialized = false;
     bool IsFlaggedForDestruction = false;
     friend class EngineCore;
 
 protected:
     GameObject* OwnerObject = nullptr;
+    bool IsInitialized = false;
 
 public:
     virtual ~GameObjectComponent() = default;

@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <type_traits>
 #include <vector>
 
@@ -13,6 +14,7 @@ public:
     void Run();
 
     GameObject* CreateGameObject();
+    GameObject* CreateGameObject(const std::string& name);
 
     template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
     T* GetComponent(GameObject* owner);

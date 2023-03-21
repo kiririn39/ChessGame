@@ -35,8 +35,8 @@ void EngineCore::Run()
 
         for (const auto component : needsInitialization)
         {
-            component->OnInitialize();
             component->IsInitialized = true;
+            component->OnInitialize();
         }
 
         BeginDrawing();
@@ -59,6 +59,14 @@ GameObject* EngineCore::CreateGameObject()
 {
     auto* instance = new GameObject();
     GameObjects.push_back(instance);
+
+    return instance;
+}
+
+GameObject* EngineCore::CreateGameObject(const std::string& name)
+{
+    auto instance = CreateGameObject();
+    instance->Name = name;
 
     return instance;
 }

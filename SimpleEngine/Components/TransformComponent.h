@@ -8,7 +8,7 @@ class TransformComponent : public GameObjectComponent
 private:
     Vector3 LocalPosition = {};
     Vector3 LocalRotation = {};
-    Vector3 LocalScale = {};
+    Vector3 LocalScale = {1, 1, 1};
 
     [[nodiscard]] Vector3 ComputeLocalValue(Vector3 (TransformComponent::* parentWorldValueGetter)() const,
                                             Vector3 localValue) const;
