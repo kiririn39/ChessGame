@@ -2,6 +2,7 @@
 
 #include "GameObjectTemplates.h"
 #include "Components/EngineStatsComponent.h"
+#include "Components/KeyboardMovementComponent.h"
 #include "Components/SpriteComponent.h"
 #include "Components/TransformComponent.h"
 
@@ -16,6 +17,7 @@ int main()
 
     auto spriteObject = engine->CreateGameObject("GameBoard");
     spriteObject->AddComponentOfType<TransformComponent>();
+    spriteObject->AddComponentOfType<KeyboardMovementComponent>();
     auto spriteComponent = spriteObject->AddComponentOfType<SpriteComponent>();
     spriteComponent->LoadSpriteFromPath(R"(Resources\board_plain_04.png)");
 
