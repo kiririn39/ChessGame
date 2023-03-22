@@ -1,10 +1,13 @@
 #include "EngineCore.h"
 
 #include <algorithm>
+#include <format>
 #include <ranges>
 
 #include "GameObject.h"
 #include "raylib.h"
+#include "Backward/BackwardClass.h"
+#include "Components/Camera2dComponent.h"
 #include "Components/GameObjectComponent.h"
 
 EngineCore* EngineCore::GetInstance()
@@ -15,12 +18,17 @@ EngineCore* EngineCore::GetInstance()
     return Instance;
 }
 
+Vector2 EngineCore::GetWindowSize() const
+{
+    return windowSize;
+}
+
 void EngineCore::Run()
 {
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    windowSize.x = 1280;
+    windowSize.y = 720;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(windowSize.x, windowSize.y, "raylib [core] example - basic window");
 
     SetTargetFPS(60);
 
@@ -39,14 +47,29 @@ void EngineCore::Run()
             component->OnInitialize();
         }
 
+        Camera2D camera{};
+
+        auto match = std::ranges::find_if(Components, [](const GameObjectComponent* component)
+        {
+            return dynamic_cast<const Camera2dComponent*>(component) != nullptr;
+        });
+        
+        if (match != Components.end())
+            camera = static_cast<Camera2dComponent*>(*match)->GetCamera();
+        else
+            Backward::PrintArgs(std::format("Couldn't find any Camera2dComponent"));
+
         BeginDrawing();
 
         ClearBackground(RAYWHITE);
+        BeginMode2D(camera);
+
         DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
         for (const auto component : Components)
             component->OnUpdate(deltaTime);
 
+        EndMode2D();
         EndDrawing();
 
         DestroyObjects();

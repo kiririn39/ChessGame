@@ -1,4 +1,5 @@
 #pragma once
+#include <raylib.h>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -8,8 +9,13 @@ class GameObjectComponent;
 
 class EngineCore
 {
+private:
+    Vector2 windowSize{};
+
 public:
     static EngineCore* GetInstance();
+
+    Vector2 GetWindowSize() const;
 
     void Run();
 
