@@ -30,7 +30,7 @@ void EngineCore::Run()
 
     InitWindow(windowSize.x, windowSize.y, "raylib [core] example - basic window");
 
-    SetTargetFPS(60);
+    SetTargetFPS(GetMonitorRefreshRate(0));
 
     while (!WindowShouldClose())
     {
@@ -53,11 +53,14 @@ void EngineCore::Run()
         {
             return dynamic_cast<const Camera2dComponent*>(component) != nullptr;
         });
-        
+
         if (match != Components.end())
             camera = static_cast<Camera2dComponent*>(*match)->GetCamera();
         else
-            Backward::PrintArgs(std::format("Couldn't find any Camera2dComponent"));
+        {
+            TraceLog(LOG_WARNING, std::format("Couldn't find any Camera2dComponent\n").c_str());
+            Backward::PrintTrace();
+        }
 
         BeginDrawing();
 

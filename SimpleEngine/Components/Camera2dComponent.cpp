@@ -19,8 +19,11 @@ Camera2D Camera2dComponent::GetCamera()
 
     if (transform == nullptr)
     {
-        Backward::PrintArgs(std::format("SpriteComponent can't work, Gameobject: {} has not TransformComponent",
-                                        OwnerObject->Name));
+        TraceLog(LOG_WARNING, std::format(
+                     "GameObject: {} Camera2dComponent can't work, Gameobject: {} has not TransformComponent\n",
+                     OwnerObject->Name, OwnerObject->Name).c_str());
+        Backward::PrintTrace();
+
         return Camera2D();
     }
 

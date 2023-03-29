@@ -6,16 +6,15 @@
 class SpriteComponent : public GameObjectComponent
 {
 private:
-    bool hasInitializedTexture = false;
-    const char* PathToInitialSprite = nullptr;
     Texture2D texture{};
+    Image preLoadedTextureData{};
 
-    void FreeTexture();
-
-    bool IsFilePathValid(const char* path) const;
-
+    void FreeAllTextureData();
+    void FinishTextureLoading();
 public:
     void LoadSpriteFromPath(const char* path);
+
+    Vector2 GetSpriteSize() const;
 
     void OnInitialize() override;
     void OnUpdate(float deltaTime) override;

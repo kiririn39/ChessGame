@@ -5,58 +5,81 @@
 #include "raymath.h"
 #include "TransformComponent.h"
 #include <format>
-#include <fstream>
+#include <sstream>
 
-void SpriteComponent::FreeTexture()
+void SpriteComponent::FreeAllTextureData()
 {
     UnloadTexture(texture);
 
-    hasInitializedTexture = false;
+    if (preLoadedTextureData.data != nullptr)
+        UnloadImage(preLoadedTextureData);
 }
 
-bool SpriteComponent::IsFilePathValid(const char* path) const
+void SpriteComponent::FinishTextureLoading()
 {
-    const std::ifstream file(path);
-    return file.good();
+    if (preLoadedTextureData.data == nullptr)
+        return;
+
+    texture = LoadTextureFromImage(preLoadedTextureData);
+
+    UnloadImage(preLoadedTextureData);
+    preLoadedTextureData.data = nullptr;
 }
 
 void SpriteComponent::LoadSpriteFromPath(const char* path)
 {
-    if (!IsInitialized)
+    if (!FileExists(path))
     {
-        PathToInitialSprite = path;
+        TraceLog(LOG_WARNING, std::format(
+                     "GameObject: {} SpriteComponent can't work, Can't load a texture from given path as it doesn't exist: {}\n{}",
+                     OwnerObject->Name, path, Backward::GetTrace().str()).c_str());
         return;
     }
 
-    if (hasInitializedTexture)
-        FreeTexture();
+    FreeAllTextureData();
 
-    if (!IsFilePathValid(path))
-        Backward::PrintArgs(path);
+    preLoadedTextureData = LoadImage(path);
 
-    texture = LoadTexture(path);
-    hasInitializedTexture = true;
+    texture.width = preLoadedTextureData.width;
+    texture.height = preLoadedTextureData.height;
+    texture.format = preLoadedTextureData.format;
+    texture.mipmaps = preLoadedTextureData.mipmaps;
+
+    if (IsInitialized)
+        FinishTextureLoading();
+}
+
+Vector2 SpriteComponent::GetSpriteSize() const
+{
+    return Vector2(texture.width, texture.height);
 }
 
 void SpriteComponent::OnInitialize()
 {
-    if (PathToInitialSprite == nullptr)
-        return;
-
-    LoadSpriteFromPath(PathToInitialSprite);
+    FinishTextureLoading();
 }
 
 void SpriteComponent::OnUpdate(float deltaTime)
 {
-    if (!hasInitializedTexture)
+    TraceLog(LOG_WARNING,
+         std::format("GameObject: {} SpriteComponent can't work, texture id == 0\n",
+                     OwnerObject->Name).c_str());
+    Backward::PrintTrace();
+    if (texture.id == 0)
+    {
+
+
         return;
+    }
 
     auto* transform = GetOwner()->GetComponentOfType<TransformComponent>();
 
     if (transform == nullptr)
     {
-        Backward::PrintArgs(std::format("SpriteComponent can't work, Gameobject: {} has not TransformComponent",
-                                        OwnerObject->Name));
+        TraceLog(LOG_WARNING, std::format(
+                     "GameObject: {} SpriteComponent can't work, Gameobject: {} has not TransformComponent\n",
+                     OwnerObject->Name, OwnerObject->Name).c_str());
+        Backward::PrintTrace();
         return;
     }
 
@@ -76,5 +99,5 @@ void SpriteComponent::OnUpdate(float deltaTime)
 
 void SpriteComponent::OnDestroy()
 {
-    FreeTexture();
+    FreeAllTextureData();
 }

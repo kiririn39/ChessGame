@@ -13,9 +13,10 @@ void KeyboardMovementComponent::OnUpdate(float deltaTime)
 
     if (transform == nullptr)
     {
-        Backward::PrintArgs(std::format(
-            "KeyboardMovementComponent can't work, Gameobject: {} has not TransformComponent",
-            OwnerObject->Name));
+        TraceLog(LOG_WARNING, std::format(
+                     "KeyboardMovementComponent can't work, Gameobject: {} has not TransformComponent\n",
+                     OwnerObject->Name).c_str());
+        Backward::PrintTrace();
         return;
     }
 
