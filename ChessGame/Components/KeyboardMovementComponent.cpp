@@ -4,7 +4,7 @@
 #include <raylib.h>
 
 #include "GameObjectTemplates.h"
-#include "Backward/BackwardClass.h"
+#include "Logger.h"
 #include "Components/TransformComponent.h"
 
 void KeyboardMovementComponent::OnUpdate(float deltaTime)
@@ -13,10 +13,9 @@ void KeyboardMovementComponent::OnUpdate(float deltaTime)
 
     if (transform == nullptr)
     {
-        TraceLog(LOG_WARNING, std::format(
-                     "KeyboardMovementComponent can't work, Gameobject: {} has not TransformComponent\n",
-                     OwnerObject->Name).c_str());
-        Backward::PrintTrace();
+        Logger::LogWithStackTrace(Level::LOG_WARNING, std::format(
+                                      "KeyboardMovementComponent can't work, Gameobject: {} has not TransformComponent\n",
+                                      OwnerObject->Name));
         return;
     }
 

@@ -1,9 +1,8 @@
 ﻿#include "Camera2dComponent.h"
 
 #include <format>
-
+#include "Logger.h"
 #include "TransformComponent.h"
-#include "Backward/BackwardClass.h"
 #include "External/raylib/src/raymath.h"
 
 void Camera2dComponent::OnInitialize()
@@ -19,10 +18,9 @@ Camera2D Camera2dComponent::GetCamera()
 
     if (transform == nullptr)
     {
-        TraceLog(LOG_WARNING, std::format(
-                     "GameObject: {} Camera2dComponent can't work, Gameobject: {} has not TransformComponent\n",
-                     OwnerObject->Name, OwnerObject->Name).c_str());
-        Backward::PrintTrace();
+        Logger::LogWithStackTrace(Level::LOG_WARNING, std::format(
+                                      "GameObject: {} Camera2dComponent can't work, Gameobject: {} has not TransformComponent\n",
+                                      OwnerObject->Name, OwnerObject->Name));
 
         return Camera2D();
     }

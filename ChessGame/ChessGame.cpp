@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GameObjectTemplates.h"
-#include "Backward/BackwardClass.h"
 #include "Components/Camera2dComponent.h"
 #include "Components/EngineStatsComponent.h"
 #include "Components/KeyboardMovementComponent.h"
@@ -12,8 +11,6 @@
 
 int main()
 {
-    Backward::CreateInstance();
-
     const auto engine = EngineCore::GetInstance();
 
     const auto object = engine->CreateGameObject();

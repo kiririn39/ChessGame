@@ -3,10 +3,9 @@
 #include <algorithm>
 #include <format>
 #include <ranges>
-
 #include "GameObject.h"
+#include "Logger.h"
 #include "raylib.h"
-#include "Backward/BackwardClass.h"
 #include "Components/Camera2dComponent.h"
 #include "Components/GameObjectComponent.h"
 
@@ -57,10 +56,7 @@ void EngineCore::Run()
         if (match != Components.end())
             camera = static_cast<Camera2dComponent*>(*match)->GetCamera();
         else
-        {
-            TraceLog(LOG_WARNING, std::format("Couldn't find any Camera2dComponent\n").c_str());
-            Backward::PrintTrace();
-        }
+            Logger::LogWithStackTrace(Level::LOG_WARNING, std::format("Couldn't find any Camera2dComponent\n"));
 
         BeginDrawing();
 

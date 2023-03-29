@@ -1,11 +1,10 @@
 ﻿#include "SpriteComponent.h"
 
-#include "Backward/Backward.h"
 #include "GameObjectTemplates.h"
 #include "raymath.h"
 #include "TransformComponent.h"
 #include <format>
-#include <sstream>
+#include "Logger.h"
 
 void SpriteComponent::FreeAllTextureData()
 {
@@ -30,9 +29,9 @@ void SpriteComponent::LoadSpriteFromPath(const char* path)
 {
     if (!FileExists(path))
     {
-        TraceLog(LOG_WARNING, std::format(
-                     "GameObject: {} SpriteComponent can't work, Can't load a texture from given path as it doesn't exist: {}\n{}",
-                     OwnerObject->Name, path, Backward::GetTrace().str()).c_str());
+        Logger::LogWithStackTrace(Level::LOG_WARNING, std::format(
+                                      "GameObject: {} SpriteComponent can't work, Can't load a texture from given path as it doesn't exist: {}\n",
+                                      OwnerObject->Name, path));
         return;
     }
 
@@ -61,14 +60,11 @@ void SpriteComponent::OnInitialize()
 
 void SpriteComponent::OnUpdate(float deltaTime)
 {
-    TraceLog(LOG_WARNING,
-         std::format("GameObject: {} SpriteComponent can't work, texture id == 0\n",
-                     OwnerObject->Name).c_str());
-    Backward::PrintTrace();
+    Logger::LogWithStackTrace(Level::LOG_WARNING, std::format(
+                                  "GameObject: {} SpriteComponent can't work, texture id == 0\n",
+                                  OwnerObject->Name));
     if (texture.id == 0)
     {
-
-
         return;
     }
 
@@ -76,10 +72,9 @@ void SpriteComponent::OnUpdate(float deltaTime)
 
     if (transform == nullptr)
     {
-        TraceLog(LOG_WARNING, std::format(
-                     "GameObject: {} SpriteComponent can't work, Gameobject: {} has not TransformComponent\n",
-                     OwnerObject->Name, OwnerObject->Name).c_str());
-        Backward::PrintTrace();
+        Logger::LogWithStackTrace(Level::LOG_WARNING, std::format(
+                                      "GameObject: {} SpriteComponent can't work, Gameobject: {} has not TransformComponent\n",
+                                      OwnerObject->Name, OwnerObject->Name));
         return;
     }
 
