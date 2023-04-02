@@ -146,6 +146,7 @@
     <ClCompile Include="ChessGame.cpp" />
     <ClCompile Include="Components\CameraStatsComponent.cpp" />
     <ClCompile Include="Components\CameraZoomComponent.cpp" />
+    <ClCompile Include="Components\CollisionTestComponent.cpp" />
     <ClCompile Include="Components\EngineStatsComponent.cpp" />
     <ClCompile Include="Components\KeyboardMovementComponent.cpp" />
   </ItemGroup>
@@ -157,6 +158,7 @@
   <ItemGroup>
     <ClInclude Include="Components\CameraStatsComponent.h" />
     <ClInclude Include="Components\CameraZoomComponent.h" />
+    <ClInclude Include="Components\CollisionTestComponent.h" />
     <ClInclude Include="Components\EngineStatsComponent.h" />
     <ClInclude Include="Components\KeyboardMovementComponent.h" />
   </ItemGroup>

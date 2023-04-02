@@ -6,6 +6,7 @@
 #include "Logger.h"
 #include "Components/Camera2dComponent.h"
 #include "Components/TransformComponent.h"
+#include "Input/Input.h"
 
 void CameraStatsComponent::OnUpdate(float deltaTime)
 {
@@ -20,15 +21,23 @@ void CameraStatsComponent::OnUpdate(float deltaTime)
         return;
     }
 
-    if (IsKeyPressed(KEY_APOSTROPHE))
+    if (IsKeyPressed(Input::DebugKey))
         IsActivated = !IsActivated;
 
     if (!IsActivated)
         return;
 
+    int componentsCount = EngineCore::GetInstance()->GetComponentsCount();
+    int gameobjectsCount = EngineCore::GetInstance()->GetGameObjectsCount();
+    float fps = GetFPS();
     auto cameraPosition = transformComponent->GetWorldPosition();
-    std::string message = std::format("--Camera stats--\n"
+    std::string message = std::format("--Game stats--\n"
+                                      "Components count: {}\n"
+                                      "GameObjects count: {}\n"
                                       "World Position X:{} Y:{}\n"
-                                      "Zoom:{}", cameraPosition.x, cameraPosition.y, cameraComponent->GetZoom());
+                                      "Zoom:{}\n"
+                                      "FPS: {}",
+                                      componentsCount, gameobjectsCount, cameraPosition.x, cameraPosition.y,
+                                      cameraComponent->GetZoom(), fps);
     DrawText(message.c_str(), 30, 30, 40, LIGHTGRAY);
 }

@@ -7,8 +7,37 @@
 #include "Logger.h"
 #include "raylib.h"
 #include "Components/Camera2dComponent.h"
+#include "Components/CollisionBaseComponent.h"
 #include "Components/GameObjectComponent.h"
 #include "Components/UIComponent.h"
+0
+void EngineCore::UpdateCollisions()
+{
+    auto isCollisionComponent = std::views::filter([](GameObjectComponent* component)
+    {
+        return dynamic_cast<CollisionBaseComponent*>(component) != nullptr;
+    });
+    auto toCollisionComponent = std::views::transform(
+        [](GameObjectComponent* component) -> CollisionBaseComponent*
+        {
+            return dynamic_cast<CollisionBaseComponent*>(component);
+        });
+
+    static std::vector<CollisionBaseComponent*> collisionComponents;
+    collisionComponents.clear();
+    std::ranges::copy(Components | isCollisionComponent | toCollisionComponent,
+                      std::back_inserter(collisionComponents));
+
+    for (CollisionBaseComponent* collisionComponent : collisionComponents)
+        collisionComponent->PreCollisionsUpdate();
+
+    for (CollisionBaseComponent* collisionComponent : collisionComponents)
+        for (CollisionBaseComponent* otherComponent : collisionComponents)
+            collisionComponent->UpdateCollisionWith(otherComponent);
+
+    for (CollisionBaseComponent* collisionComponent : collisionComponents)
+        collisionComponent->PostCollisionsUpdate();
+}
 
 EngineCore* EngineCore::GetInstance()
 {
@@ -47,14 +76,16 @@ void EngineCore::Run()
             component->OnInitialize();
         }
 
+        UpdateCollisions();
+
         auto uiComponents = Components | std::views::filter([](const GameObjectComponent* component)
         {
-            return dynamic_cast<const UIComponent*>(component) != nullptr;
+            return dynamic_cast<const UIComponent*>(component) != nullptr && component->IsInitialized;
         });
 
         auto standartComponetns = Components | std::views::filter([](const GameObjectComponent* component)
         {
-            return dynamic_cast<const UIComponent*>(component) == nullptr;
+            return dynamic_cast<const UIComponent*>(component) == nullptr && component->IsInitialized;
         });
 
         Camera2D camera{};
@@ -132,20 +163,24 @@ void EngineCore::DestroyObjects()
     }).begin(), GameObjects.end());
 }
 
-bool EngineCore::IsValid(GameObject* object) const
+bool EngineCore::IsValid(const GameObject* object) const
 {
     if (object == nullptr)
         return false;
 
-    return std::ranges::find(GameObjects, object) != GameObjects.end();
+    const auto obj = const_cast<GameObject*>(object);
+
+    return std::ranges::find(GameObjects, obj) != GameObjects.end();
 }
 
-bool EngineCore::IsValid(GameObjectComponent* component) const
+bool EngineCore::IsValid(const GameObjectComponent* component) const
 {
     if (component == nullptr)
         return false;
 
-    return std::ranges::find(Components, component) != Components.end();
+    const auto comp = const_cast<GameObjectComponent*>(component);
+
+    return std::ranges::find(Components, comp) != Components.end();
 }
 
 void EngineCore::Destroy(GameObject* object)

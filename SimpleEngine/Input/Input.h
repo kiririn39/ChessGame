@@ -24,6 +24,8 @@ public:
         {KEY_E, -1.0f},
     };
 
+    inline static constexpr int DebugKey = KEY_APOSTROPHE;
+
     static Vector2 GetVector2AxisInput(const std::map<int, Vector2>& map);
     static float GetFloatAxisInput(const std::map<int, float>& map);
 };

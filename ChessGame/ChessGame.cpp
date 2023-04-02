@@ -4,8 +4,10 @@
 #include "Components/Camera2dComponent.h"
 #include "Components/CameraStatsComponent.h"
 #include "Components/CameraZoomComponent.h"
+#include "Components/CollisionTestComponent.h"
 #include "Components/EngineStatsComponent.h"
 #include "Components/KeyboardMovementComponent.h"
+#include "Components/RectangleCollisionComponent.h"
 #include "Components/SpriteComponent.h"
 #include "Components/TransformComponent.h"
 #include "External/raylib/src/raymath.h"
@@ -35,11 +37,24 @@ int main()
 
     auto halfSprite = Vector2Scale(spriteComponent->GetSpriteSize(), 0.5f);
 
-    auto rook = engine->CreateGameObject("Rook");
-    auto rookTransform = rook->AddComponentOfType<TransformComponent>();
+    auto rookObject = engine->CreateGameObject("Rook");
+    auto rookTransform = rookObject->AddComponentOfType<TransformComponent>();
     rookTransform->SetLocalPosition({10, 0, 0});
-    auto rookSprite = rook->AddComponentOfType<SpriteComponent>();
+    auto rookSprite = rookObject->AddComponentOfType<SpriteComponent>();
     rookSprite->LoadSpriteFromPath(R"(Resources\B_Rook.png)");
+    auto rookCollision = rookObject->AddComponentOfType<RectangleCollisionComponent>();
+    rookCollision->SetBounds(rookSprite->GetSpriteSize());
+
+    auto rookObject1 = engine->CreateGameObject("Rook");
+    auto rookTransform1 = rookObject1->AddComponentOfType<TransformComponent>();
+    rookTransform1->SetLocalPosition({10, 0, 0});
+    auto rookSprite1 = rookObject1->AddComponentOfType<SpriteComponent>();
+    rookSprite1->LoadSpriteFromPath(R"(Resources\B_Rook.png)");
+    auto rookCollision1 = rookObject1->AddComponentOfType<RectangleCollisionComponent>();
+    rookCollision1->SetBounds(rookSprite1->GetSpriteSize());
+    rookObject1->AddComponentOfType<KeyboardMovementComponent>();
+    rookObject1->AddComponentOfType<CollisionTestComponent>();
+
 
     cameraTransform->SetLocalPosition({halfSprite.x, halfSprite.y, 0});
     engine->Run();

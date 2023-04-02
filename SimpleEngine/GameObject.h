@@ -26,8 +26,11 @@ public:
 
     void Destroy();
 
-    template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-    T* GetComponentOfType();
+    template <typename T>
+    T* GetComponentOfType() const;
+
+    template <typename T>
+    void GetComponentsOfType(std::vector<T*>& result) const;
 
     template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
     T* AddComponentOfType();

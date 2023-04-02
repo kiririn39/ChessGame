@@ -14,7 +14,7 @@ void Camera2dComponent::OnInitialize()
 
 Camera2D Camera2dComponent::GetCamera()
 {
-    const auto* transform = GetOwner()->GetComponentOfType<TransformComponent>();
+    auto* transform = GetOwner()->GetComponentOfType<TransformComponent>();
 
     if (transform == nullptr)
     {

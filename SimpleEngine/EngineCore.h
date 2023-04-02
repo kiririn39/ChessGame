@@ -12,6 +12,8 @@ class EngineCore
 private:
     Vector2 windowSize{};
 
+    void UpdateCollisions();
+
 public:
     static EngineCore* GetInstance();
 
@@ -22,14 +24,17 @@ public:
     GameObject* CreateGameObject();
     GameObject* CreateGameObject(const std::string& name);
 
-    template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-    T* GetComponent(GameObject* owner);
+    template <typename T>
+    T* GetComponent(const GameObject* owner) const;
+
+    template <typename T>
+    void GetComponents(const GameObject* owner, std::vector<T*>& result) const;
 
     template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
     T* AddComponent(GameObject* owner);
 
-    bool IsValid(GameObject* object) const;
-    bool IsValid(GameObjectComponent* component) const;
+    bool IsValid(const GameObject* object) const;
+    bool IsValid(const GameObjectComponent* component) const;
 
     void Destroy(GameObject* object);
 

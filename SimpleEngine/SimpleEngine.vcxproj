@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Components\Camera2dComponent.cpp" />
+    <ClCompile Include="Components\CollisionBaseComponent.cpp" />
     <ClCompile Include="Components\GameObjectComponent.cpp">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -97,6 +98,7 @@
       </AdditionalUsingDirectories>
       <LibCompiled>true</LibCompiled>
     </ClCompile>
+    <ClCompile Include="Components\RectangleCollisionComponent.cpp" />
     <ClCompile Include="Components\SpriteComponent.cpp" />
     <ClCompile Include="Components\TransformComponent.cpp">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
@@ -184,7 +186,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\Camera2dComponent.h" />
+    <ClInclude Include="Components\CollisionBaseComponent.h" />
     <ClInclude Include="Components\GameObjectComponent.h" />
+    <ClInclude Include="Components\IReceiveCollisionUpdates.h" />
+    <ClInclude Include="Components\RectangleCollisionComponent.h" />
     <ClInclude Include="Components\SpriteComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Components\UIComponent.h" />
