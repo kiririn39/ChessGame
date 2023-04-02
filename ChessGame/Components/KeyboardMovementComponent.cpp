@@ -2,10 +2,12 @@
 
 #include <format>
 #include <raylib.h>
+#include <raymath.h>
 
 #include "GameObjectTemplates.h"
 #include "Logger.h"
 #include "Components/TransformComponent.h"
+#include "Input/Input.h"
 
 void KeyboardMovementComponent::OnUpdate(float deltaTime)
 {
@@ -22,14 +24,11 @@ void KeyboardMovementComponent::OnUpdate(float deltaTime)
     auto localPosition = transform->GetLocalPosition();
     auto deltaSpeed = Speed * deltaTime;
 
-    if (IsKeyDown(KEY_RIGHT))
-        localPosition.x += deltaSpeed;
-    if (IsKeyDown(KEY_LEFT))
-        localPosition.x -= deltaSpeed;
-    if (IsKeyDown(KEY_UP))
-        localPosition.y -= deltaSpeed;
-    if (IsKeyDown(KEY_DOWN))
-        localPosition.y += deltaSpeed;
+    Vector2 direction = Input::GetVector2AxisInput(Input::DirectionAxis);
+    Vector2 deltaDirection = Vector2Scale(direction, deltaSpeed);
+
+    localPosition.x += deltaDirection.x;
+    localPosition.y += deltaDirection.y;
 
     transform->SetLocalPosition(localPosition);
 }

@@ -60,11 +60,12 @@ void SpriteComponent::OnInitialize()
 
 void SpriteComponent::OnUpdate(float deltaTime)
 {
-    Logger::LogWithStackTrace(Level::LOG_WARNING, std::format(
-                                  "GameObject: {} SpriteComponent can't work, texture id == 0\n",
-                                  OwnerObject->Name));
     if (texture.id == 0)
     {
+        Logger::LogWithStackTrace(Level::LOG_WARNING, std::format(
+                                      "GameObject: {} SpriteComponent can't work, texture id == 0\n",
+                                      OwnerObject->Name));
+
         return;
     }
 

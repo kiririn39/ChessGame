@@ -14,4 +14,7 @@ public:
     void OnInitialize() override;
 
     Camera2D GetCamera();
+
+    void SetZoom(float zoom);
+    float GetZoom() const ;
 };

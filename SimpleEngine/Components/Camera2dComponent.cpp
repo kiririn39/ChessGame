@@ -36,3 +36,13 @@ Camera2D Camera2dComponent::GetCamera()
 
     return camera;
 }
+
+void Camera2dComponent::SetZoom(float zoom)
+{
+    this->zoom = zoom;
+}
+
+float Camera2dComponent::GetZoom() const
+{
+    return zoom;
+}

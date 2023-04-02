@@ -8,6 +8,7 @@
 #include "raylib.h"
 #include "Components/Camera2dComponent.h"
 #include "Components/GameObjectComponent.h"
+#include "Components/UIComponent.h"
 
 EngineCore* EngineCore::GetInstance()
 {
@@ -24,8 +25,8 @@ Vector2 EngineCore::GetWindowSize() const
 
 void EngineCore::Run()
 {
-    windowSize.x = 1280;
-    windowSize.y = 720;
+    windowSize.x = 1280 * 2;
+    windowSize.y = 720 * 2;
 
     InitWindow(windowSize.x, windowSize.y, "raylib [core] example - basic window");
 
@@ -46,6 +47,16 @@ void EngineCore::Run()
             component->OnInitialize();
         }
 
+        auto uiComponents = Components | std::views::filter([](const GameObjectComponent* component)
+        {
+            return dynamic_cast<const UIComponent*>(component) != nullptr;
+        });
+
+        auto standartComponetns = Components | std::views::filter([](const GameObjectComponent* component)
+        {
+            return dynamic_cast<const UIComponent*>(component) == nullptr;
+        });
+
         Camera2D camera{};
 
         auto match = std::ranges::find_if(Components, [](const GameObjectComponent* component)
@@ -65,10 +76,14 @@ void EngineCore::Run()
 
         DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
-        for (const auto component : Components)
+        for (const auto component : standartComponetns)
             component->OnUpdate(deltaTime);
 
         EndMode2D();
+
+        for (const auto component : uiComponents)
+            component->OnUpdate(deltaTime);
+
         EndDrawing();
 
         DestroyObjects();
