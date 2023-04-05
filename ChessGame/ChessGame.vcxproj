@@ -144,8 +144,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ChessGame.cpp" />
+    <ClCompile Include="Components\BoardTileComponent.cpp" />
     <ClCompile Include="Components\CameraStatsComponent.cpp" />
     <ClCompile Include="Components\CameraZoomComponent.cpp" />
+    <ClCompile Include="Components\ChessBoardComponent.cpp" />
+    <ClCompile Include="Components\ChessPieceComponent.cpp" />
     <ClCompile Include="Components\CollisionTestComponent.cpp" />
     <ClCompile Include="Components\EngineStatsComponent.cpp" />
     <ClCompile Include="Components\KeyboardMovementComponent.cpp" />
@@ -156,8 +159,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ChessGameGeneral.h" />
+    <ClInclude Include="Components\BoardTileComponent.h" />
     <ClInclude Include="Components\CameraStatsComponent.h" />
     <ClInclude Include="Components\CameraZoomComponent.h" />
+    <ClInclude Include="Components\ChessBoardComponent.h" />
+    <ClInclude Include="Components\ChessPieceComponent.h" />
     <ClInclude Include="Components\CollisionTestComponent.h" />
     <ClInclude Include="Components\EngineStatsComponent.h" />
     <ClInclude Include="Components\KeyboardMovementComponent.h" />

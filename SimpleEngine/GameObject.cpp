@@ -1,9 +1,11 @@
 #include "GameObject.h"
 
 #include <cassert>
+#include <format>
 #include <ranges>
 
 #include "EngineCore.h"
+#include "Logger.h"
 
 void GameObject::Destroy()
 {
@@ -12,7 +14,15 @@ void GameObject::Destroy()
 
 void GameObject::AddChildGameObject(GameObject* object)
 {
-    assert(object != nullptr);
+    if (object == nullptr)
+    {
+        Logger::LogWithStackTrace(Level::LOG_WARNING,
+                                  std::format("Gameobject: {} you are trying to add null child", Name));
+        return;
+    }
+
+    if (object == this)
+        return;
 
     if (std::ranges::find(Children, object) != Children.end())
         return;
@@ -23,7 +33,15 @@ void GameObject::AddChildGameObject(GameObject* object)
 
 void GameObject::RemoveChildGameObject(GameObject* object)
 {
-    assert(object != nullptr);
+    if (object == nullptr)
+    {
+        Logger::LogWithStackTrace(Level::LOG_WARNING,
+                                  std::format("Gameobject: {} you are trying to remove null child", Name));
+        return;
+    }
+
+    if (object == this)
+        return;
 
     auto match = std::ranges::find(Children, object);
 
@@ -32,6 +50,14 @@ void GameObject::RemoveChildGameObject(GameObject* object)
 
     object->Parent = nullptr;
     Children.erase(match);
+}
+
+void GameObject::Unparent()
+{
+    if (Parent == nullptr)
+        return;
+
+    Parent->RemoveChildGameObject(this);
 }
 
 GameObject* GameObject::GetChildGameObject(uint16_t index) const

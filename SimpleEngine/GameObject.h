@@ -37,6 +37,7 @@ public:
 
     void AddChildGameObject(GameObject* object);
     void RemoveChildGameObject(GameObject* object);
+    void Unparent();
     [[nodiscard]] GameObject* GetChildGameObject(uint16_t index) const;
     [[nodiscard]] size_t GetChildrenCount() const;
     [[nodiscard]] GameObject* GetParent() const;

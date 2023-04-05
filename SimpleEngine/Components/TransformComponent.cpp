@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "raymath.h"
+#include "Input/Input.h"
 
 Vector3 TransformComponent::ComputeLocalValue(Vector3 (TransformComponent::* parentWorldValueGetter)() const,
                                               Vector3 localValue) const
@@ -17,6 +18,18 @@ Vector3 TransformComponent::ComputeLocalValue(Vector3 (TransformComponent::* par
         return localValue;
 
     return Vector3Add((parentTransform->*parentWorldValueGetter)(), localValue);
+}
+
+void TransformComponent::OnUpdate(float deltaTime)
+{
+    if (IsKeyPressed(Input::DebugKey))
+        doDrawDebugPoint = !doDrawDebugPoint;
+
+    if (!doDrawDebugPoint)
+        return;
+
+    auto position = GetLocalPosition();
+    DrawCircle(position.x, position.y, 2.0f, GREEN);
 }
 
 Vector3 TransformComponent::GetLocalPosition() const

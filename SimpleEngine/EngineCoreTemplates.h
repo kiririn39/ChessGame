@@ -45,5 +45,8 @@ T* EngineCore::AddComponent(GameObject* owner)
     Components.push_back(instance);
     owner->ComponentsCount++;
 
+    if (auto* renderComponent = dynamic_cast<IRenderComponent*>(instance))
+        renderer.AddRenderComponent(renderComponent);
+
     return instance;
 }

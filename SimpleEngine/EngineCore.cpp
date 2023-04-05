@@ -10,7 +10,7 @@
 #include "Components/CollisionBaseComponent.h"
 #include "Components/GameObjectComponent.h"
 #include "Components/UIComponent.h"
-0
+
 void EngineCore::UpdateCollisions()
 {
     auto isCollisionComponent = std::views::filter([](GameObjectComponent* component)
@@ -65,10 +65,14 @@ void EngineCore::Run()
     {
         const float deltaTime = GetFrameTime();
 
-        auto needsInitialization = Components | std::views::filter([](const GameObjectComponent* component)
+        auto isNotInitialized = std::views::filter([](const GameObjectComponent* component)
         {
             return !component->IsInitialized;
         });
+
+        static std::vector<GameObjectComponent*> needsInitialization;
+        needsInitialization.clear();
+        std::ranges::copy(Components | isNotInitialized, std::back_inserter(needsInitialization));
 
         for (const auto component : needsInitialization)
         {
@@ -110,10 +114,24 @@ void EngineCore::Run()
         for (const auto component : standartComponetns)
             component->OnUpdate(deltaTime);
 
-        EndMode2D();
+        auto renderComponetns = Components | std::views::filter([](GameObjectComponent* component)
+        {
+            auto b1 =  dynamic_cast<IRenderComponent*>(component) != nullptr && component->IsInitialized;
+            return b1;
+        }) | std::views::transform([](GameObjectComponent* component)
+        {
+            return dynamic_cast<IRenderComponent*>(component);
+        });
 
+        for (IRenderComponent* component : renderComponetns)
+            renderer.AddRenderComponent(component);
+
+        renderer.Render();
+        EndMode2D();
+                
         for (const auto component : uiComponents)
             component->OnUpdate(deltaTime);
+
 
         EndDrawing();
 
@@ -148,6 +166,9 @@ void EngineCore::DestroyObjects()
 
     for (auto component : Components | flaggedComponents)
     {
+        if (auto* renderComponent = dynamic_cast<IRenderComponent*>(component))
+            renderer.RemoveRenderComponent(renderComponent);
+
         component->GetOwner()->ComponentsCount--;
         component->OnDestroy();
     }
@@ -193,9 +214,7 @@ void EngineCore::Destroy(GameObject* object)
     });
 
     for (auto component : markedForDestroy)
-    {
-        component->IsFlaggedForDestruction = true;
-    }
+        component->Destroy();
 
     for (auto child : object->Children)
         Destroy(child);

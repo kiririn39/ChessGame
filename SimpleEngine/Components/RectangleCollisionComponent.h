@@ -14,7 +14,7 @@ protected:
 
 public:
     void SetBounds(Vector2 rectangle);
-    Rectangle GetRectangle() const;
+    virtual Rectangle GetRectangle() const;
     Vector2 GetExtent() const;
 
     float GetRadius() const override;

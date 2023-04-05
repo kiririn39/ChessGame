@@ -6,6 +6,7 @@
 class TransformComponent : public GameObjectComponent
 {
 private:
+    bool doDrawDebugPoint = false;
     Vector3 LocalPosition = {};
     Vector3 LocalRotation = {};
     Vector3 LocalScale = {1, 1, 1};
@@ -14,6 +15,8 @@ private:
                                             Vector3 localValue) const;
 
 public:
+    void OnUpdate(float deltaTime) override;
+
     Vector3 GetLocalPosition() const;
     Vector3 GetWorldPosition() const;
 

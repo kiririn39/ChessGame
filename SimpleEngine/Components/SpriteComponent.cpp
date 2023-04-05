@@ -58,7 +58,22 @@ void SpriteComponent::OnInitialize()
     FinishTextureLoading();
 }
 
-void SpriteComponent::OnUpdate(float deltaTime)
+void SpriteComponent::OnDestroy()
+{
+    FreeAllTextureData();
+}
+
+void SpriteComponent::SetRenderOrder(int order)
+{
+    sortingOrder = order;
+}
+
+int SpriteComponent::GetRenderOrder() const
+{
+    return sortingOrder;
+}
+
+void SpriteComponent::Render()
 {
     if (texture.id == 0)
     {
@@ -87,13 +102,8 @@ void SpriteComponent::OnUpdate(float deltaTime)
 
     destinationRect.width *= scale.x;
     destinationRect.height *= scale.y;
-    destinationRect.x = localPosition.x;
-    destinationRect.y = localPosition.y;
+    destinationRect.x = localPosition.x + Offset.x;
+    destinationRect.y = localPosition.y + Offset.y;
 
     DrawTexturePro(texture, originRect, destinationRect, Vector2Zero(), transform->GetLocalRotation().z, WHITE);
-}
-
-void SpriteComponent::OnDestroy()
-{
-    FreeAllTextureData();
 }

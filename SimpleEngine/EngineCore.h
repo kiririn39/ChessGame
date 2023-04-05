@@ -4,6 +4,8 @@
 #include <type_traits>
 #include <vector>
 
+#include "Renderer.h"
+
 class GameObject;
 class GameObjectComponent;
 
@@ -11,6 +13,7 @@ class EngineCore
 {
 private:
     Vector2 windowSize{};
+    Renderer renderer{};
 
     void UpdateCollisions();
 
