@@ -1,6 +1,11 @@
 #include "GameObjectComponent.h"
 
 
+bool GameObjectComponent::IsValid()
+{
+    return !IsInvalid;
+}
+
 void GameObjectComponent::InitializeInstance(GameObject* owner)
 {
     OwnerObject = owner;

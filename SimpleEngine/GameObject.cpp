@@ -7,6 +7,11 @@
 #include "EngineCore.h"
 #include "Logger.h"
 
+bool GameObject::IsInvalid()
+{
+    return isInvalid;
+}
+
 void GameObject::Destroy()
 {
     EngineCore::GetInstance()->Destroy(this);

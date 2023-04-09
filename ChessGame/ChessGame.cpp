@@ -12,7 +12,6 @@
 #include "Components/TransformComponent.h"
 #include "External/raylib/src/raymath.h"
 
-
 int main()
 {
     const auto engine = EngineCore::GetInstance();

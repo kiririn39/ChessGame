@@ -25,7 +25,7 @@ void EngineCore::UpdateCollisions()
 
     static std::vector<CollisionBaseComponent*> collisionComponents;
     collisionComponents.clear();
-    std::ranges::copy(Components | isCollisionComponent | toCollisionComponent,
+    std::ranges::copy(pool.Components | isCollisionComponent | toCollisionComponent,
                       std::back_inserter(collisionComponents));
 
     for (CollisionBaseComponent* collisionComponent : collisionComponents)
@@ -72,7 +72,7 @@ void EngineCore::Run()
 
         static std::vector<GameObjectComponent*> needsInitialization;
         needsInitialization.clear();
-        std::ranges::copy(Components | isNotInitialized, std::back_inserter(needsInitialization));
+        std::ranges::copy(pool.Components | isNotInitialized, std::back_inserter(needsInitialization));
 
         for (const auto component : needsInitialization)
         {
@@ -82,24 +82,24 @@ void EngineCore::Run()
 
         UpdateCollisions();
 
-        auto uiComponents = Components | std::views::filter([](const GameObjectComponent* component)
+        auto uiComponents = pool.Components | std::views::filter([](const GameObjectComponent* component)
         {
             return dynamic_cast<const UIComponent*>(component) != nullptr && component->IsInitialized;
         });
 
-        auto standartComponetns = Components | std::views::filter([](const GameObjectComponent* component)
+        auto standartComponetns = pool.Components | std::views::filter([](const GameObjectComponent* component)
         {
             return dynamic_cast<const UIComponent*>(component) == nullptr && component->IsInitialized;
         });
 
         Camera2D camera{};
 
-        auto match = std::ranges::find_if(Components, [](const GameObjectComponent* component)
+        auto match = std::ranges::find_if(pool.Components, [](const GameObjectComponent* component)
         {
             return dynamic_cast<const Camera2dComponent*>(component) != nullptr;
         });
 
-        if (match != Components.end())
+        if (match != pool.Components.end())
             camera = static_cast<Camera2dComponent*>(*match)->GetCamera();
         else
             Logger::LogWithStackTrace(Level::LOG_WARNING, std::format("Couldn't find any Camera2dComponent\n"));
@@ -114,10 +114,9 @@ void EngineCore::Run()
         for (const auto component : standartComponetns)
             component->OnUpdate(deltaTime);
 
-        auto renderComponetns = Components | std::views::filter([](GameObjectComponent* component)
+        auto renderComponetns = pool.Components | std::views::filter([](GameObjectComponent* component)
         {
-            auto b1 =  dynamic_cast<IRenderComponent*>(component) != nullptr && component->IsInitialized;
-            return b1;
+            return dynamic_cast<IRenderComponent*>(component) != nullptr && component->IsInitialized;
         }) | std::views::transform([](GameObjectComponent* component)
         {
             return dynamic_cast<IRenderComponent*>(component);
@@ -128,10 +127,12 @@ void EngineCore::Run()
 
         renderer.Render();
         EndMode2D();
-                
+
         for (const auto component : uiComponents)
             component->OnUpdate(deltaTime);
 
+        for (IRenderComponent* component : renderComponetns)
+            renderer.AddRenderComponent(component);
 
         EndDrawing();
 
@@ -143,8 +144,7 @@ void EngineCore::Run()
 
 GameObject* EngineCore::CreateGameObject()
 {
-    auto* instance = new GameObject();
-    GameObjects.push_back(instance);
+    GameObject* instance = pool.CreateObjectOfType<GameObject>();
 
     return instance;
 }
@@ -159,56 +159,54 @@ GameObject* EngineCore::CreateGameObject(const std::string& name)
 
 void EngineCore::DestroyObjects()
 {
-    auto flaggedComponents = std::views::filter([](const GameObjectComponent* component)
+    auto IsFlaggedComponent = std::views::filter([](const GameObjectComponent* component)
     {
         return component->IsFlaggedForDestruction;
     });
 
-    for (auto component : Components | flaggedComponents)
+    auto IsEmptyGameobject = std::views::filter([](const GameObject* gameObject)
     {
-        if (auto* renderComponent = dynamic_cast<IRenderComponent*>(component))
-            renderer.RemoveRenderComponent(renderComponent);
+        return gameObject->ComponentsCount <= 0;
+    });
 
+    auto flaggedComponentsView = pool.Components | IsFlaggedComponent;
+    std::vector<GameObjectComponent*> flaggedComponents{flaggedComponentsView.begin(), flaggedComponentsView.end()};
+
+    for (GameObjectComponent* component : flaggedComponents)
+    {
         component->GetOwner()->ComponentsCount--;
         component->OnDestroy();
     }
 
-    Components.erase(std::ranges::remove_if(Components, [](const GameObjectComponent* component)
-    {
-        return component->IsFlaggedForDestruction;
-    }).begin(), Components.end());
+    for (auto component : flaggedComponents)
+        pool.Invalidate(component);
 
-    GameObjects.erase(std::ranges::remove_if(GameObjects, [](const GameObject* object)
-    {
-        return object->ComponentsCount <= 0;
-    }).begin(), GameObjects.end());
+    auto emptyGameobjectsView = pool.GameObjects | IsEmptyGameobject;
+    std::vector<GameObject*> emptyGameobjects{emptyGameobjectsView.begin(), emptyGameobjectsView.end()};
+
+    for (auto gameobject : emptyGameobjects)
+        pool.Invalidate(gameobject);
 }
 
-bool EngineCore::IsValid(const GameObject* object) const
+bool EngineCore::IsValid(GameObject* object) const
 {
-    if (object == nullptr)
-        return false;
-
-    const auto obj = const_cast<GameObject*>(object);
-
-    return std::ranges::find(GameObjects, obj) != GameObjects.end();
+    return object != nullptr && !object->IsInvalid();
 }
 
-bool EngineCore::IsValid(const GameObjectComponent* component) const
+bool EngineCore::IsValid(GameObjectComponent* component)
 {
     if (component == nullptr)
         return false;
 
-    const auto comp = const_cast<GameObjectComponent*>(component);
-
-    return std::ranges::find(Components, comp) != Components.end();
+    return component->IsValid();
 }
 
 void EngineCore::Destroy(GameObject* object)
 {
-    IsValid(object);
+    if (!IsValid(object))
+        return;
 
-    auto markedForDestroy = Components | std::views::filter([object](const GameObjectComponent* component)
+    auto markedForDestroy = pool.Components | std::views::filter([object](const GameObjectComponent* component)
     {
         return component->GetOwner() == object;
     });
@@ -222,10 +220,10 @@ void EngineCore::Destroy(GameObject* object)
 
 size_t EngineCore::GetComponentsCount() const
 {
-    return Components.size();
+    return pool.Components.size();
 }
 
 size_t EngineCore::GetGameObjectsCount() const
 {
-    return GameObjects.size();
+    return pool.GameObjects.size();
 }

@@ -11,7 +11,7 @@
 
 #include "IReceiveCollisionUpdates.h"
 
-bool CollisionBaseComponent::isValidReference(const CollisionBaseComponent* other) const
+bool CollisionBaseComponent::isValidReference(CollisionBaseComponent* other)
 {
     return other != nullptr && other != this;
 }
@@ -20,18 +20,18 @@ void CollisionBaseComponent::PreCollisionsUpdate()
 {
     EngineCore* engine = EngineCore::GetInstance();
 
-    auto isDeletedComponent = [engine, this](std::pair<const CollisionBaseComponent*, unsigned char> tracker)
+    auto IsDeletedComponent = [engine, this](std::pair<CollisionBaseComponent*, unsigned char> tracker)
     {
         return !isValidReference(tracker.first) || !engine->IsValid(tracker.first);
     };
 
-    std::erase_if(collisionsTrackers, isDeletedComponent);
+    std::erase_if(collisionsTrackers, IsDeletedComponent);
 
     for (auto& HitsCount : collisionsTrackers | std::views::values)
         HitsCount = 0;
 }
 
-void CollisionBaseComponent::UpdateCollisionWith(const CollisionBaseComponent* other)
+void CollisionBaseComponent::UpdateCollisionWith(CollisionBaseComponent* other)
 {
     if (!isValidReference(other) || !IsInRadiusWith(other) || !DoesCollidesWith(other))
         return;
@@ -91,17 +91,17 @@ void CollisionBaseComponent::DrawDebugBounds()
 {
 }
 
-int CollisionBaseComponent::GetActiveCollisionsCount() const
+int CollisionBaseComponent::GetActiveCollisionsCount()
 {
     return activeCollisionCount;
 }
 
-float CollisionBaseComponent::GetRadius() const
+float CollisionBaseComponent::GetRadius()
 {
     return 0.0f;
 }
 
-bool CollisionBaseComponent::IsInRadiusWith(const CollisionBaseComponent* other) const
+bool CollisionBaseComponent::IsInRadiusWith(CollisionBaseComponent* other)
 {
     if (!isValidReference(other))
         return false;
@@ -120,7 +120,7 @@ bool CollisionBaseComponent::IsInRadiusWith(const CollisionBaseComponent* other)
     return distance - GetRadius() - other->GetRadius() <= 0.0f;
 }
 
-bool CollisionBaseComponent::DoesCollidesWith(const CollisionBaseComponent* other) const
+bool CollisionBaseComponent::DoesCollidesWith(CollisionBaseComponent* other)
 {
     return false;
 }

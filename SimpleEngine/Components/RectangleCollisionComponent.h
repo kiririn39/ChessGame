@@ -17,8 +17,8 @@ public:
     virtual Rectangle GetRectangle() const;
     Vector2 GetExtent() const;
 
-    float GetRadius() const override;
+    float GetRadius() override;
 
-    bool DoesCollidesWith(const CollisionBaseComponent* other) const override;
+    bool DoesCollidesWith(CollisionBaseComponent* other) override;
     void OnUpdate(float deltaTime) override;
 };

@@ -11,6 +11,9 @@ public:
 
     static void LogWithStackTrace(Level level, const std::string&& message);
     static void LogWithStackTrace(Level level, const char* message);
+
+    static void LogPerformanceStart();
+    static void LogPerformanceEnd(Level level, const char* message);
 };
 
 enum class Level

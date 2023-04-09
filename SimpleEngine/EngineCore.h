@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Renderer.h"
+#include "Memory/MemoryPool.h"
 
 class GameObject;
 class GameObjectComponent;
@@ -14,8 +15,9 @@ class EngineCore
 private:
     Vector2 windowSize{};
     Renderer renderer{};
+    MemoryPool pool{};
 
-    void UpdateCollisions();
+    inline static EngineCore* Instance = nullptr;
 
 public:
     static EngineCore* GetInstance();
@@ -36,8 +38,8 @@ public:
     template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
     T* AddComponent(GameObject* owner);
 
-    bool IsValid(const GameObject* object) const;
-    bool IsValid(const GameObjectComponent* component) const;
+    bool IsValid(GameObject* object) const;
+    bool IsValid(GameObjectComponent* component);
 
     void Destroy(GameObject* object);
 
@@ -45,10 +47,9 @@ public:
     [[nodiscard]] size_t GetGameObjectsCount() const;
 
 private:
-    inline static EngineCore* Instance = nullptr;
-    std::vector<GameObject*> GameObjects{};
-    std::vector<GameObjectComponent*> Components{};
-
     EngineCore() = default;
+
     void DestroyObjects();
+
+    void UpdateCollisions();
 };

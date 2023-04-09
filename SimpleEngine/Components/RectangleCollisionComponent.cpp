@@ -13,7 +13,7 @@ void RectangleCollisionComponent::DrawDebugBounds()
     DrawRectangleLines(rectangle.x, rectangle.y, rectangle.width, rectangle.height, color);
 }
 
-bool RectangleCollisionComponent::DoesCollidesWith(const CollisionBaseComponent* other) const
+bool RectangleCollisionComponent::DoesCollidesWith( CollisionBaseComponent* other)
 {
     const RectangleCollisionComponent* otherBox = dynamic_cast<const RectangleCollisionComponent*>(other);
 
@@ -61,7 +61,7 @@ Vector2 RectangleCollisionComponent::GetExtent() const
     return extent;
 }
 
-float RectangleCollisionComponent::GetRadius() const
+float RectangleCollisionComponent::GetRadius()
 {
     return radius;
 }

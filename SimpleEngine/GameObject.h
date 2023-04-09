@@ -11,17 +11,21 @@ class EngineCore;
 class GameObject : public Object
 {
 private:
+    bool isInvalid;
     uint16_t ComponentsCount{};
 
     GameObject* Parent = nullptr;
     std::vector<GameObject*> Children{};
 
     friend class EngineCore;
+    friend class MemoryPool;
 
 public:
     std::string Name;
 
 public:
+    bool IsInvalid();
+
     virtual ~GameObject() = default;
 
     void Destroy();

@@ -14,12 +14,12 @@ protected:
 
 private:
     unsigned int activeCollisionCount;
-    std::map<const CollisionBaseComponent*, unsigned char> collisionsTrackers{};
+    std::map<CollisionBaseComponent*, unsigned char> collisionsTrackers{};
 
-    bool isValidReference(const CollisionBaseComponent* other) const;
+    bool isValidReference(CollisionBaseComponent* other);
 
     void PreCollisionsUpdate();
-    void UpdateCollisionWith(const CollisionBaseComponent* other);
+    void UpdateCollisionWith(CollisionBaseComponent* other);
     void PostCollisionsUpdate();
 
     friend class EngineCore;
@@ -28,10 +28,10 @@ protected:
     virtual void DrawDebugBounds();
 
 public:
-    int GetActiveCollisionsCount() const;
+    int GetActiveCollisionsCount();
 
-    virtual float GetRadius() const;
-    virtual bool IsInRadiusWith(const CollisionBaseComponent* other) const;
-    virtual bool DoesCollidesWith(const CollisionBaseComponent* other) const;
+    virtual float GetRadius();
+    virtual bool IsInRadiusWith(CollisionBaseComponent* other);
+    virtual bool DoesCollidesWith(CollisionBaseComponent* other);
     virtual void SetDrawDebugBounds(bool doDraw);
 };
