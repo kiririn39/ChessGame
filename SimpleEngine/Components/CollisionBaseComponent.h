@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <map>
-#include <vector>
 
 #include "GameObjectComponent.h"
 
@@ -18,11 +17,8 @@ private:
 
     bool isValidReference(CollisionBaseComponent* other);
 
-    void PreCollisionsUpdate();
-    void UpdateCollisionWith(CollisionBaseComponent* other);
-    void PostCollisionsUpdate();
-
     friend class EngineCore;
+    friend class CollisionsDetector;
 
 protected:
     virtual void DrawDebugBounds();

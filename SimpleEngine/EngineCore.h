@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Renderer.h"
+#include "Collisions/CollisionsDetector.h"
 #include "Memory/MemoryPool.h"
 
 class GameObject;
@@ -16,6 +17,7 @@ private:
     Vector2 windowSize{};
     Renderer renderer{};
     MemoryPool pool{};
+    CollisionsDetector collisionsDetector{};
 
     inline static EngineCore* Instance = nullptr;
 

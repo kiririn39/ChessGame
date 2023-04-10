@@ -28,15 +28,7 @@ void EngineCore::UpdateCollisions()
     std::ranges::copy(pool.Components | isCollisionComponent | toCollisionComponent,
                       std::back_inserter(collisionComponents));
 
-    for (CollisionBaseComponent* collisionComponent : collisionComponents)
-        collisionComponent->PreCollisionsUpdate();
-
-    for (CollisionBaseComponent* collisionComponent : collisionComponents)
-        for (CollisionBaseComponent* otherComponent : collisionComponents)
-            collisionComponent->UpdateCollisionWith(otherComponent);
-
-    for (CollisionBaseComponent* collisionComponent : collisionComponents)
-        collisionComponent->PostCollisionsUpdate();
+    collisionsDetector.UpdateCollisionsFor(collisionComponents);
 }
 
 EngineCore* EngineCore::GetInstance()
