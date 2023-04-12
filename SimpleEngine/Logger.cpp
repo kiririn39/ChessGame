@@ -1,8 +1,11 @@
 ﻿#include "Logger.h"
 
+#include <assert.h>
 #include <chrono>
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
+
 #include "External/raylib/src/raylib.h"
 #include "Backward/backward.h"
 
@@ -33,23 +36,73 @@ void Logger::LogWithStackTrace(Level level, const char* message)
     }
 }
 
-inline static std::chrono::time_point<std::chrono::steady_clock> performanceTimeStart;
+inline static std::vector<std::chrono::time_point<std::chrono::steady_clock>> performanceTimeStarts;
 
 void Logger::LogPerformanceStart()
 {
-    performanceTimeStart = std::chrono::high_resolution_clock::now();
+    performanceTimeStarts.push_back(std::chrono::high_resolution_clock::now());
 }
 
-void Logger::LogPerformanceEnd(Level level, const char* message)
+void Logger::LogPerformanceEnd(const char* message, TimePrecision precision, Level logLevel)
 {
-    auto end1 = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - performanceTimeStart);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto end2 = std::chrono::high_resolution_clock::now() - performanceTimeStarts.back();
 
     std::string str;
     str.append(message);
-    str.append(std::format(" miliseconds: {}", duration));
 
-    Log(level, std::move(str));
+    if (precision == TimePrecision::Seconds)
+        str.append(std::format(" : {}",
+                               std::chrono::duration_cast<std::chrono::seconds>
+                               (end - performanceTimeStarts.back())));
+    else if (precision == TimePrecision::Milliseconds)
+        str.append(std::format(" : {}",
+                               std::chrono::duration_cast<std::chrono::milliseconds>
+                               (end - performanceTimeStarts.back())));
+    else if (precision == TimePrecision::Microseconds)
+        str.append(std::format(" : {}",
+                               std::chrono::duration_cast<std::chrono::microseconds>
+                               (end - performanceTimeStarts.back())));
+    else
+        assert(false);
+
+    performanceTimeStarts.pop_back();
+
+    Log(logLevel, std::move(str));
 }
 
+inline static std::unordered_map<std::string, std::chrono::time_point<std::chrono::steady_clock>>
+accumulatedPerformanceStarts;
+inline static std::unordered_map<std::string, std::chrono::duration<double>> accumulatedPerformance;
 
+void Logger::LogPerformanceAccumulateFrameStart(const std::string& key)
+{
+    accumulatedPerformanceStarts[key] = std::chrono::high_resolution_clock::now();
+}
+
+void Logger::LogPerformanceAccumulateFrameEnd(const std::string& key)
+{
+    auto end = std::chrono::high_resolution_clock::now();
+    accumulatedPerformance[key] += end - accumulatedPerformanceStarts[key];
+}
+
+void Logger::LogPerformanceAccumulatedEnd(const std::string& key, TimePrecision precision, Level logLevel)
+{
+    std::string str;
+    str.append(key);
+
+    if (precision == TimePrecision::Seconds)
+        str.append(std::format(" : {}", std::chrono::duration_cast<std::chrono::seconds>(accumulatedPerformance[key])));
+    else if (precision == TimePrecision::Milliseconds)
+        str.append(std::format(
+            " : {}", std::chrono::duration_cast<std::chrono::milliseconds>(accumulatedPerformance[key])));
+    else if (precision == TimePrecision::Microseconds)
+        str.append(std::format(
+            " : {}", std::chrono::duration_cast<std::chrono::microseconds>(accumulatedPerformance[key])));
+    else
+        assert(false);
+
+    Log(logLevel, std::move(str));
+
+    accumulatedPerformance.erase(key);
+}

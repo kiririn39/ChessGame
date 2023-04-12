@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include <map>
 
 #include "GameObjectComponent.h"
+#include "External/raylib/src/raylib.h"
 
 class IReceiveCollisionUpdates;
 class CollisionBaseComponent;
@@ -10,10 +10,16 @@ class CollisionBaseComponent : public GameObjectComponent
 {
 protected:
     bool doDrawDebugBounds = false;
+    float collisionRadius = 0.0f;
 
 private:
     unsigned int activeCollisionCount;
-    std::map<CollisionBaseComponent*, unsigned char> collisionsTrackers{};
+
+    float cachedRadius{};
+    Vector3 cachedPosition{};
+    Vector3 cachedRotation{};
+    Vector3 cachedScale{};
+    bool hasChanged = true;
 
     bool isValidReference(CollisionBaseComponent* other);
 
@@ -25,9 +31,10 @@ protected:
 
 public:
     int GetActiveCollisionsCount();
+    void RecalculateCachedValues();
+    bool HasChangesSinceLastUpdate();
+    float GetCollisionRadius();
 
-    virtual float GetRadius();
-    virtual bool IsInRadiusWith(CollisionBaseComponent* other);
     virtual bool DoesCollidesWith(CollisionBaseComponent* other);
     virtual void SetDrawDebugBounds(bool doDraw);
 };

@@ -2,11 +2,43 @@
 
 #include "GameObjectTemplates.h"
 #include "TransformComponent.h"
-#include <raymath.h>
+#include "External/raylib/src/raymath.h"
 
 bool CollisionBaseComponent::isValidReference(CollisionBaseComponent* other)
 {
     return other != nullptr && other != this;
+}
+
+void CollisionBaseComponent::RecalculateCachedValues()
+{
+    TransformComponent* thisTransform = GetOwner()->GetComponentOfType<TransformComponent>();
+
+    hasChanged = true;
+
+    Vector3 newPosition = thisTransform->GetWorldPosition();
+    Vector3 newRotation = thisTransform->GetWorldRotation();
+    Vector3 newScale = thisTransform->GetWorldScale();
+
+    if (collisionRadius == collisionRadius &&
+        Vector3Equals(newPosition, cachedPosition) &&
+        Vector3Equals(newRotation, cachedRotation) &&
+        Vector3Equals(newScale, cachedScale))
+        hasChanged = false;
+
+    cachedRadius = collisionRadius;
+    cachedPosition = newPosition;
+    cachedRotation = newRotation;
+    cachedScale = newScale;
+}
+
+bool CollisionBaseComponent::HasChangesSinceLastUpdate()
+{
+    return hasChanged;
+}
+
+float CollisionBaseComponent::GetCollisionRadius()
+{
+    return collisionRadius;
 }
 
 void CollisionBaseComponent::DrawDebugBounds()
@@ -16,30 +48,6 @@ void CollisionBaseComponent::DrawDebugBounds()
 int CollisionBaseComponent::GetActiveCollisionsCount()
 {
     return activeCollisionCount;
-}
-
-float CollisionBaseComponent::GetRadius()
-{
-    return 0.0f;
-}
-
-bool CollisionBaseComponent::IsInRadiusWith(CollisionBaseComponent* other)
-{
-    if (!isValidReference(other))
-        return false;
-
-    TransformComponent* otherTransform = other->GetOwner()->GetComponentOfType<TransformComponent>();
-    TransformComponent* thisTransform = other->GetOwner()->GetComponentOfType<TransformComponent>();
-
-    if (otherTransform == nullptr || thisTransform == nullptr)
-        return false;
-
-    Vector3 otherPosition = otherTransform->GetLocalPosition();
-    Vector3 thisPosition = thisTransform->GetLocalPosition();
-
-    float distance = Vector3Distance(otherPosition, thisPosition);
-
-    return distance - GetRadius() - other->GetRadius() <= 0.0f;
 }
 
 bool CollisionBaseComponent::DoesCollidesWith(CollisionBaseComponent* other)

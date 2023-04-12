@@ -13,9 +13,9 @@
 
 void EngineCore::UpdateCollisions()
 {
-    auto isCollisionComponent = std::views::filter([](GameObjectComponent* component)
+    auto isCollisionComponent = std::views::filter([this](GameObjectComponent* component)
     {
-        return dynamic_cast<CollisionBaseComponent*>(component) != nullptr;
+        return IsValid(component) && dynamic_cast<CollisionBaseComponent*>(component) != nullptr;
     });
     auto toCollisionComponent = std::views::transform(
         [](GameObjectComponent* component) -> CollisionBaseComponent*
@@ -132,6 +132,11 @@ void EngineCore::Run()
     }
 
     CloseWindow();
+
+    Logger::LogPerformanceAccumulatedEnd("hadCollisionPreviously");
+    Logger::LogPerformanceAccumulatedEnd("IsInRadiusWith");
+    Logger::LogPerformanceAccumulatedEnd("DoesCollidesWith");
+    Logger::LogPerformanceAccumulatedEnd("Try NotifyOnExitCollision");
 }
 
 GameObject* EngineCore::CreateGameObject()

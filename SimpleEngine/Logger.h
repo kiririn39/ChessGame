@@ -1,20 +1,6 @@
 ﻿#pragma once
 #include <string>
 
-enum class Level;
-
-class Logger
-{
-public:
-    static void Log(Level level, const std::string&& message);
-    static void Log(Level level, const char* message);
-
-    static void LogWithStackTrace(Level level, const std::string&& message);
-    static void LogWithStackTrace(Level level, const char* message);
-
-    static void LogPerformanceStart();
-    static void LogPerformanceEnd(Level level, const char* message);
-};
 
 enum class Level
 {
@@ -33,4 +19,32 @@ enum class Level
     LOG_FATAL,
     // Fatal logging, used to abort program: exit(EXIT_FAILURE)
     LOG_NONE // Disable logging
+};
+
+enum class TimePrecision
+{
+    Seconds,
+    Milliseconds,
+    Microseconds,
+    Nanoseconds
+};
+
+class Logger
+{
+public:
+    static void Log(Level level, const std::string&& message);
+    static void Log(Level level, const char* message);
+
+    static void LogWithStackTrace(Level level, const std::string&& message);
+    static void LogWithStackTrace(Level level, const char* message);
+
+    static void LogPerformanceStart();
+    static void LogPerformanceEnd(const char* message, TimePrecision precision = TimePrecision::Milliseconds,
+                                  Level logLevel = Level::LOG_INFO);
+
+    static void LogPerformanceAccumulateFrameStart(const std::string& key);
+    static void LogPerformanceAccumulateFrameEnd(const std::string& key);
+    static void LogPerformanceAccumulatedEnd(const std::string& key,
+                                             TimePrecision precision = TimePrecision::Milliseconds,
+                                             Level logLevel = Level::LOG_INFO);
 };
