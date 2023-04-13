@@ -18,8 +18,7 @@ void EngineCore::UpdateCollisions()
         return IsValid(component) && dynamic_cast<CollisionBaseComponent*>(component) != nullptr;
     });
     auto toCollisionComponent = std::views::transform(
-        [](GameObjectComponent* component) -> CollisionBaseComponent*
-        {
+        [](GameObjectComponent* component) -> CollisionBaseComponent* {
             return dynamic_cast<CollisionBaseComponent*>(component);
         });
 
@@ -132,11 +131,6 @@ void EngineCore::Run()
     }
 
     CloseWindow();
-
-    Logger::LogPerformanceAccumulatedEnd("hadCollisionPreviously");
-    Logger::LogPerformanceAccumulatedEnd("IsInRadiusWith");
-    Logger::LogPerformanceAccumulatedEnd("DoesCollidesWith");
-    Logger::LogPerformanceAccumulatedEnd("Try NotifyOnExitCollision");
 }
 
 GameObject* EngineCore::CreateGameObject()
