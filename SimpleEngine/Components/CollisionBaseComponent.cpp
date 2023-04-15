@@ -2,7 +2,7 @@
 
 #include "GameObjectTemplates.h"
 #include "TransformComponent.h"
-#include "External/raylib/src/raymath.h"
+#include "raymath.h"
 
 bool CollisionBaseComponent::isValidReference(CollisionBaseComponent* other)
 {

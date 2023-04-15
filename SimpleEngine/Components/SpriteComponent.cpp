@@ -3,107 +3,107 @@
 #include "GameObjectTemplates.h"
 #include "raymath.h"
 #include "TransformComponent.h"
-#include <format>
+#include "Utilities/Format.h"
 #include "Logger.h"
 
 void SpriteComponent::FreeAllTextureData()
 {
-    UnloadTexture(texture);
+	UnloadTexture(texture);
 
-    if (preLoadedTextureData.data != nullptr)
-        UnloadImage(preLoadedTextureData);
+	if (preLoadedTextureData.data != nullptr)
+		UnloadImage(preLoadedTextureData);
 }
 
 void SpriteComponent::FinishTextureLoading()
 {
-    if (preLoadedTextureData.data == nullptr)
-        return;
+	if (preLoadedTextureData.data == nullptr)
+		return;
 
-    texture = LoadTextureFromImage(preLoadedTextureData);
+	texture = LoadTextureFromImage(preLoadedTextureData);
 
-    UnloadImage(preLoadedTextureData);
-    preLoadedTextureData.data = nullptr;
+	UnloadImage(preLoadedTextureData);
+	preLoadedTextureData.data = nullptr;
 }
 
 void SpriteComponent::LoadSpriteFromPath(const char* path)
 {
-    if (!FileExists(path))
-    {
-        Logger::LogWithStackTrace(Level::LOG_WARNING, std::format(
-                                      "GameObject: {} SpriteComponent can't work, Can't load a texture from given path as it doesn't exist: {}\n",
-                                      OwnerObject->Name, path));
-        return;
-    }
+	if (!FileExists(path))
+	{
+		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
+				"GameObject: %s SpriteComponent can't work, Can't load a texture from given path as it doesn't exist: %s\n",
+				OwnerObject->Name, path));
+		return;
+	}
 
-    FreeAllTextureData();
+	FreeAllTextureData();
 
-    preLoadedTextureData = LoadImage(path);
+	preLoadedTextureData = LoadImage(path);
 
-    texture.width = preLoadedTextureData.width;
-    texture.height = preLoadedTextureData.height;
-    texture.format = preLoadedTextureData.format;
-    texture.mipmaps = preLoadedTextureData.mipmaps;
+	texture.width = preLoadedTextureData.width;
+	texture.height = preLoadedTextureData.height;
+	texture.format = preLoadedTextureData.format;
+	texture.mipmaps = preLoadedTextureData.mipmaps;
 
-    if (IsInitialized)
-        FinishTextureLoading();
+	if (IsInitialized)
+		FinishTextureLoading();
 }
 
 Vector2 SpriteComponent::GetSpriteSize() const
 {
-    return Vector2(texture.width, texture.height);
+	return Vector2(texture.width, texture.height);
 }
 
 void SpriteComponent::OnInitialize()
 {
-    FinishTextureLoading();
+	FinishTextureLoading();
 }
 
 void SpriteComponent::OnDestroy()
 {
-    FreeAllTextureData();
+	FreeAllTextureData();
 }
 
 void SpriteComponent::SetRenderOrder(int order)
 {
-    sortingOrder = order;
+	sortingOrder = order;
 }
 
 int SpriteComponent::GetRenderOrder() const
 {
-    return sortingOrder;
+	return sortingOrder;
 }
 
 void SpriteComponent::Render()
 {
-    if (texture.id == 0)
-    {
-        Logger::LogWithStackTrace(Level::LOG_WARNING, std::format(
-                                      "GameObject: {} SpriteComponent can't work, texture id == 0\n",
-                                      OwnerObject->Name));
+	if (texture.id == 0)
+	{
+		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
+				"GameObject: %s SpriteComponent can't work, texture id == 0\n",
+				OwnerObject->Name));
 
-        return;
-    }
+		return;
+	}
 
-    auto* transform = GetOwner()->GetComponentOfType<TransformComponent>();
+	auto* transform = GetOwner()->GetComponentOfType<TransformComponent>();
 
-    if (transform == nullptr)
-    {
-        Logger::LogWithStackTrace(Level::LOG_WARNING, std::format(
-                                      "GameObject: {} SpriteComponent can't work, Gameobject: {} has not TransformComponent\n",
-                                      OwnerObject->Name, OwnerObject->Name));
-        return;
-    }
+	if (transform == nullptr)
+	{
+		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
+				"GameObject: %s SpriteComponent can't work, Gameobject: %s has not TransformComponent\n",
+				OwnerObject->Name, OwnerObject->Name));
+		return;
+	}
 
-    Vector3 scale = transform->GetLocalScale();
-    Vector3 localPosition = transform->GetLocalPosition();
+	Vector3 scale = transform->GetLocalScale();
+	Vector3 localPosition = transform->GetLocalPosition();
 
-    Rectangle originRect = Rectangle{0, 0, (float)texture.width, (float)texture.height};
-    Rectangle destinationRect = originRect;
+	Rectangle originRect = Rectangle{ 0, 0, (float)texture.width, (float)texture.height };
+	Rectangle destinationRect = originRect;
 
-    destinationRect.width *= scale.x;
-    destinationRect.height *= scale.y;
-    destinationRect.x = localPosition.x + Offset.x;
-    destinationRect.y = localPosition.y + Offset.y;
+	destinationRect.width *= scale.x;
+	destinationRect.height *= scale.y;
+	destinationRect.x = localPosition.x + Offset.x;
+	destinationRect.y = localPosition.y + Offset.y;
 
-    DrawTexturePro(texture, originRect, destinationRect, Vector2Zero(), transform->GetLocalRotation().z, WHITE);
+	DrawTexturePro(texture, originRect, destinationRect, Vector2Zero(), transform->GetLocalRotation().z, WHITE);
 }

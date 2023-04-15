@@ -3,3 +3,4 @@
 build/
 x64/
 External/raylib-4.2.0/examples/
+/cmake-build-debug/

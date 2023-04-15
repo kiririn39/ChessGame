@@ -1,8 +1,8 @@
 ﻿#include "RectangleCollisionComponent.h"
 
-#include "GameObject.h"
+#include "GameObjectTemplates.h"
 #include "TransformComponent.h"
-#include "External/raylib/src/raymath.h"
+#include "raymath.h"
 #include "Input/Input.h"
 
 void RectangleCollisionComponent::DrawDebugBounds()

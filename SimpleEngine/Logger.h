@@ -35,7 +35,7 @@ public:
     static void Log(Level level, const std::string&& message);
     static void Log(Level level, const char* message);
 
-    static void LogWithStackTrace(Level level, const std::string&& message);
+    static void LogWithStackTrace(Level level, const std::string& message);
     static void LogWithStackTrace(Level level, const char* message);
 
     static void LogPerformanceStart();

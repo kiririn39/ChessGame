@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include <assert.h>
+#include <cassert>
 
 #include "MemoryPool.h"
 
@@ -28,7 +28,7 @@ T* MemoryPool::CreateObjectOfType()
     std::pmr::vector<T>* container = static_cast<std::pmr::vector<T>*>(iterator->second);
     auto FirstReusableInstance = [](T& instance) { return instance.isInvalid; };
 
-    auto FirstReusableComponent = std::find_if(container->begin(), container->end(), FirstReusableInstance);
+    auto FirstReusableComponent = std::ranges::find_if(container->begin(), container->end(), FirstReusableInstance);
 
     if (FirstReusableComponent != container->end())
     {
@@ -77,7 +77,7 @@ T* MemoryPool::CreateObjectOfType()
     std::pmr::vector<T>* container = static_cast<std::pmr::vector<T>*>(iterator->second);
     auto FirstReusableInstance = [](T& instance) { return !instance.IsValid(); };
 
-    auto FirstReusableComponent = std::find_if(container->begin(), container->end(), FirstReusableInstance);
+    auto FirstReusableComponent = std::ranges::find_if(container->begin(), container->end(), FirstReusableInstance);
 
     if (FirstReusableComponent != container->end())
     {

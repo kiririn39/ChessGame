@@ -3,6 +3,8 @@
 
 #include "Components/CollisionBaseComponent.h"
 
+class CollisionsDetector;
+
 struct CollisionResult
 {
     CollisionBaseComponent* FirstComponent;

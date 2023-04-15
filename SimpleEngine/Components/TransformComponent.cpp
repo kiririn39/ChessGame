@@ -1,6 +1,6 @@
 #include "TransformComponent.h"
 
-#include "GameObject.h"
+#include "GameObjectTemplates.h"
 #include "raymath.h"
 #include "Input/Input.h"
 
