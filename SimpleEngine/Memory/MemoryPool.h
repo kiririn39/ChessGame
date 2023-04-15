@@ -12,7 +12,6 @@ class MemoryPool
 private:
     std::array<std::byte, 100000> buffer{};
     std::pmr::monotonic_buffer_resource memoryResource{buffer.data(), buffer.max_size()};
-
     std::pmr::unordered_map<std::type_index, void*> typesVectors{&memoryResource};
 
 public:

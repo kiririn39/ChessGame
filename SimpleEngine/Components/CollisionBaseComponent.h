@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "GameObjectComponent.h"
-#include "External/raylib/src/raylib.h"
+#include "raylib.h"
 
 class IReceiveCollisionUpdates;
 class CollisionBaseComponent;

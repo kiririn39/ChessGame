@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "CollisionBaseComponent.h"
-#include "External/raylib/src/raylib.h"
+#include "raylib.h"
 
 class RectangleCollisionComponent : public CollisionBaseComponent
 {
