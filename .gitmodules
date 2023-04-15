@@ -1,6 +1,0 @@
-[submodule "Backward"]
-	path = Backward
-	url = https://github.com/bombela/backward-cpp.git
-[submodule "External/raylib"]
-	path = External/raylib
-	url = https://github.com/raysan5/raylib.git
