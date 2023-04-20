@@ -3,7 +3,7 @@
 #include <boost/format.hpp>
 #include "Logger.h"
 #include "TransformComponent.h"
-#include "raymath.h"
+#include "raymath.hpp"
 
 void Camera2dComponent::OnInitialize()
 {
@@ -12,7 +12,7 @@ void Camera2dComponent::OnInitialize()
 	cameraOffset = Vector2Scale(windowSize, 0.5f);
 }
 
-Camera2D Camera2dComponent::GetCamera()
+raylib::Camera2D Camera2dComponent::GetCamera()
 {
 	auto* transform = GetOwner()->GetComponentOfType<TransformComponent>();
 
@@ -22,15 +22,15 @@ Camera2D Camera2dComponent::GetCamera()
 				message = (boost::format(
 				"GameObject: %s Camera2dComponent can't work, Gameobject: %s has not TransformComponent\n")
 						   % OwnerObject->Name % OwnerObject->Name).str();
-		
+
 		Logger::LogWithStackTrace(Level::LOG_WARNING, message);
 
-		return Camera2D();
+		return raylib::Camera2D();
 	}
 
 	const auto localPosition = transform->GetLocalPosition();
 
-	Camera2D camera;
+	raylib::Camera2D camera;
 	camera.offset = cameraOffset;
 	camera.zoom = zoom;
 	camera.rotation = transform->GetLocalRotation().z;

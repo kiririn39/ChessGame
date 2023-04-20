@@ -2,7 +2,7 @@
 
 #include "GameObjectTemplates.h"
 #include "TransformComponent.h"
-#include "raymath.h"
+#include "raymath.hpp"
 
 bool CollisionBaseComponent::isValidReference(CollisionBaseComponent* other)
 {
@@ -15,7 +15,7 @@ void CollisionBaseComponent::RecalculateCachedValues()
 
     hasChanged = true;
 
-    Vector3 newPosition = thisTransform->GetWorldPosition();
+	Vector3 newPosition = thisTransform->GetWorldPosition();
     Vector3 newRotation = thisTransform->GetWorldRotation();
     Vector3 newScale = thisTransform->GetWorldScale();
 
