@@ -50,3 +50,74 @@ T* EngineCore::AddComponent(GameObject* owner)
 
 	return instance;
 }
+
+template<typename T>
+void EngineCore::SubscribeToOnCreate(entt::entity Entity)
+{
+	OnCreateComponents.emplace(Entity).first->second = entt::type_id<T>();
+}
+
+
+template<typename T>
+void EngineCore::UnSubscribeFromOnCreate(entt::entity Entity)
+{
+	if (OnCreateComponents.contains(Entity))
+		OnCreateComponents.erase(Entity);
+}
+
+
+template<typename T>
+void EngineCore::SubscribeToUpdate(entt::entity Entity)
+{
+	OnUpdateComponents.emplace(Entity).first->second = entt::type_id<T>();
+}
+
+
+template<typename T>
+void EngineCore::UnSubscribeFromUpdate(entt::entity Entity)
+{
+	if (OnUpdateComponents.contains(Entity))
+		OnUpdateComponents.erase(Entity);
+}
+
+
+template<typename T>
+void EngineCore::SubscribeToOnDestroy(entt::entity Entity)
+{
+	OnDestroyComponents.emplace(Entity).first->second = entt::type_id<T>();
+}
+
+
+template<typename T>
+void EngineCore::UnSubscribeFromOnDestroy(entt::entity Entity)
+{
+	if (OnDestroyComponents.contains(Entity))
+		OnDestroyComponents.erase(Entity);
+}
+
+
+template<typename T>
+T& EngineCore::AddComponent(entt::entity Entity)
+{
+	return registry.emplace<T>(Entity);
+}
+
+
+template<typename T>
+T& EngineCore::GetComponent(entt::entity Entity)
+{
+	return registry.get<T>(Entity);
+}
+
+template<typename T>
+void EngineCore::RemoveComponent(entt::entity Entity)
+{
+	OnCreateComponents.erase(Entity);
+	OnUpdateComponents.erase(Entity);
+	OnDestroyComponents.erase(Entity);
+
+	registry.erase<T>(Entity);
+}
+
+
+

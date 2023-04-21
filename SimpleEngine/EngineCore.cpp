@@ -11,6 +11,8 @@
 #include "Components/GameObjectComponent.h"
 #include "Components/UIComponent.h"
 #include "Utilities/Format.h"
+#include "Components/TransformComponent.h"
+#include "GameEntities/GameEntity.h"
 
 void EngineCore::UpdateCollisions()
 {

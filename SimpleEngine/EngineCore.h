@@ -1,56 +1,94 @@
 #pragma once
+
 #include <string>
 #include <type_traits>
 #include <vector>
+#include <entt.hpp>
 
 #include "Renderer.h"
 #include "Collisions/CollisionsDetector.h"
 #include "Memory/MemoryPool.h"
 
 class GameObject;
+
 class GameObjectComponent;
 
 class EngineCore
 {
 private:
-    Vector2 windowSize{};
-    Renderer renderer{};
-    MemoryPool pool{};
-    CollisionsDetector collisionsDetector{};
+	Vector2 windowSize{};
+	Renderer renderer{};
+	MemoryPool pool{};
+	CollisionsDetector collisionsDetector{};
+	entt::registry registry;
 
-    inline static EngineCore* Instance = nullptr;
+	inline static EngineCore* Instance = nullptr;
 
+	entt::dense_map<entt::entity, entt::type_info> OnCreateComponents;
+	entt::dense_map<entt::entity, entt::type_info> OnUpdateComponents;
+	entt::dense_map<entt::entity, entt::type_info> OnDestroyComponents;
 public:
-    static EngineCore* GetInstance();
+	static EngineCore* GetInstance();
 
-    Vector2 GetWindowSize() const;
+	Vector2 GetWindowSize() const;
 
-    void Run();
+	void Run();
 
-    GameObject* CreateGameObject();
-    GameObject* CreateGameObject(const std::string& name);
+	GameObject* CreateGameObject();
 
-    template <typename T>
-    T* GetComponent(const GameObject* owner) const;
+	GameObject* CreateGameObject(const std::string& name);
 
-    template <typename T>
-    void GetComponents(const GameObject* owner, std::vector<T*>& result) const;
+	template<typename T>
+	T* GetComponent(const GameObject* owner) const;
 
-    template <typename T> requires std::is_base_of_v<GameObjectComponent, T>
-    T* AddComponent(GameObject* owner);
+	template<typename T>
+	void GetComponents(const GameObject* owner, std::vector<T*>& result) const;
 
-    bool IsValid(GameObject* object) const;
-    bool IsValid(GameObjectComponent* component);
+	template<typename T>
+	requires std::is_base_of_v<GameObjectComponent, T>
+	T* AddComponent(GameObject* owner);
 
-    void Destroy(GameObject* object);
+	bool IsValid(GameObject* object) const;
 
-    [[nodiscard]] size_t GetComponentsCount() const;
-    [[nodiscard]] size_t GetGameObjectsCount() const;
+	bool IsValid(GameObjectComponent* component);
+
+	void Destroy(GameObject* object);
+
+	[[nodiscard]] size_t GetComponentsCount() const;
+
+	[[nodiscard]] size_t GetGameObjectsCount() const;
+
+	template<typename T>
+	void SubscribeToOnCreate(entt::entity Entity);
+
+	template<typename T>
+	void UnSubscribeFromOnCreate(entt::entity Entity);
+
+	template<typename T>
+	void SubscribeToUpdate(entt::entity Entity);
+
+	template<typename T>
+	void UnSubscribeFromUpdate(entt::entity Entity);
+
+	template<typename T>
+	void SubscribeToOnDestroy(entt::entity Entity);
+
+	template<typename T>
+	void UnSubscribeFromOnDestroy(entt::entity Entity);
+
+	template<typename T>
+	T& AddComponent(entt::entity Entity);
+
+	template<typename T>
+	T& GetComponent(entt::entity Entity);
+
+	template<typename T>
+	void RemoveComponent(entt::entity Entity);
 
 private:
-    EngineCore() = default;
+	EngineCore() = default;
 
-    void DestroyObjects();
+	void DestroyObjects();
 
-    void UpdateCollisions();
+	void UpdateCollisions();
 };
