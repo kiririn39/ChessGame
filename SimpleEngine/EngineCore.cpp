@@ -227,3 +227,15 @@ size_t EngineCore::GetGameObjectsCount() const
 {
 	return pool.GameObjects.size();
 }
+
+bool EngineCore::IsValid(GameEntity entity)
+{
+	return (entt::entity)entity != entt::null && registry.valid(entity);
+}
+
+GameEntity EngineCore::CreateGameEntity()
+{
+	auto entity = registry.create();
+
+	registry.emplace<TransformComponent>(entity);
+}

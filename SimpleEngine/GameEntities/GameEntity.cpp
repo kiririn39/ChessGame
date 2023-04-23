@@ -3,3 +3,9 @@
 //
 
 #include "GameEntity.h"
+#include "EngineCore.h"
+
+bool GameEntity::IsValid()
+{
+	return EngineCore::GetInstance()->IsValid(*this);
+}
