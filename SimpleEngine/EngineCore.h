@@ -8,6 +8,8 @@
 #include "Renderer.h"
 #include "Collisions/CollisionsDetector.h"
 #include "Memory/MemoryPool.h"
+#include "GameEntities/GameEntity.h"
+#include "GameEntities/GameComponent.h"
 
 class GameObject;
 
@@ -59,31 +61,38 @@ public:
 	[[nodiscard]] size_t GetGameObjectsCount() const;
 
 	template<typename T>
-	void SubscribeToOnCreate(entt::entity Entity);
+	void SubscribeToOnCreate(GameEntity entity);
 
 	template<typename T>
-	void UnSubscribeFromOnCreate(entt::entity Entity);
+	void UnSubscribeFromOnCreate(GameEntity entity);
 
 	template<typename T>
-	void SubscribeToUpdate(entt::entity Entity);
+	void SubscribeToUpdate(GameEntity entity);
 
 	template<typename T>
-	void UnSubscribeFromUpdate(entt::entity Entity);
+	void UnSubscribeFromUpdate(GameEntity entity);
 
 	template<typename T>
-	void SubscribeToOnDestroy(entt::entity Entity);
+	void SubscribeToOnDestroy(GameEntity entity);
 
 	template<typename T>
-	void UnSubscribeFromOnDestroy(entt::entity Entity);
+	void UnSubscribeFromOnDestroy(GameEntity entity);
 
 	template<typename T>
-	T& AddComponent(entt::entity Entity);
+	T& AddComponent(GameEntity entity);
 
 	template<typename T>
-	T& GetComponent(entt::entity Entity);
+	T& GetComponent(GameEntity entity);
 
 	template<typename T>
-	void RemoveComponent(entt::entity Entity);
+	void RemoveComponent(GameEntity entity);
+
+	bool IsValid(GameEntity entity);
+
+	template<typename T>
+	bool IsValid(GameEntity entity);
+
+	GameEntity CreateGameEntity();
 
 private:
 	EngineCore() = default;

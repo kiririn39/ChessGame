@@ -4,7 +4,7 @@
 
 struct GameEntity
 {
-	entt::entity Entity;
+	entt::entity Entity = entt::null;
 
 	GameEntity() = default;
 
@@ -18,4 +18,6 @@ struct GameEntity
 	{
 		return Entity;
 	}
+
+	bool IsValid();
 };

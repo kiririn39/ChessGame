@@ -52,71 +52,77 @@ T* EngineCore::AddComponent(GameObject* owner)
 }
 
 template<typename T>
-void EngineCore::SubscribeToOnCreate(entt::entity Entity)
+void EngineCore::SubscribeToOnCreate(GameEntity entity)
 {
-	OnCreateComponents.emplace(Entity).first->second = entt::type_id<T>();
+	OnCreateComponents.emplace(entity).first->second = entt::type_id<T>();
 }
 
 
 template<typename T>
-void EngineCore::UnSubscribeFromOnCreate(entt::entity Entity)
+void EngineCore::UnSubscribeFromOnCreate(GameEntity entity)
 {
-	if (OnCreateComponents.contains(Entity))
-		OnCreateComponents.erase(Entity);
+	if (OnCreateComponents.contains(entity))
+		OnCreateComponents.erase(entity);
 }
 
 
 template<typename T>
-void EngineCore::SubscribeToUpdate(entt::entity Entity)
+void EngineCore::SubscribeToUpdate(GameEntity entity)
 {
-	OnUpdateComponents.emplace(Entity).first->second = entt::type_id<T>();
+	OnUpdateComponents.emplace(entity).first->second = entt::type_id<T>();
 }
 
 
 template<typename T>
-void EngineCore::UnSubscribeFromUpdate(entt::entity Entity)
+void EngineCore::UnSubscribeFromUpdate(GameEntity entity)
 {
-	if (OnUpdateComponents.contains(Entity))
-		OnUpdateComponents.erase(Entity);
+	if (OnUpdateComponents.contains(entity))
+		OnUpdateComponents.erase(entity);
 }
 
 
 template<typename T>
-void EngineCore::SubscribeToOnDestroy(entt::entity Entity)
+void EngineCore::SubscribeToOnDestroy(GameEntity entity)
 {
-	OnDestroyComponents.emplace(Entity).first->second = entt::type_id<T>();
+	OnDestroyComponents.emplace(entity).first->second = entt::type_id<T>();
 }
 
 
 template<typename T>
-void EngineCore::UnSubscribeFromOnDestroy(entt::entity Entity)
+void EngineCore::UnSubscribeFromOnDestroy(GameEntity entity)
 {
-	if (OnDestroyComponents.contains(Entity))
-		OnDestroyComponents.erase(Entity);
+	if (OnDestroyComponents.contains(entity))
+		OnDestroyComponents.erase(entity);
 }
 
 
 template<typename T>
-T& EngineCore::AddComponent(entt::entity Entity)
+T& EngineCore::AddComponent(GameEntity entity)
 {
-	return registry.emplace<T>(Entity);
+	return registry.emplace<T>(entity);
 }
 
 
 template<typename T>
-T& EngineCore::GetComponent(entt::entity Entity)
+T& EngineCore::GetComponent(GameEntity entity)
 {
-	return registry.get<T>(Entity);
+	return registry.get<T>(entity);
 }
 
 template<typename T>
-void EngineCore::RemoveComponent(entt::entity Entity)
+void EngineCore::RemoveComponent(GameEntity entity)
 {
-	OnCreateComponents.erase(Entity);
-	OnUpdateComponents.erase(Entity);
-	OnDestroyComponents.erase(Entity);
+	OnCreateComponents.erase(entity);
+	OnUpdateComponents.erase(entity);
+	OnDestroyComponents.erase(entity);
 
-	registry.erase<T>(Entity);
+	registry.erase<T>(entity);
+}
+
+template<typename T>
+bool EngineCore::IsValid(GameEntity entity)
+{
+	return IsValid(entity) && registry.all_of<T>(entity);
 }
 
 

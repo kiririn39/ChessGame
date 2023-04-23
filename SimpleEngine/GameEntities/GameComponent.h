@@ -24,5 +24,7 @@ public:
 	T& GetComponent();
 
 private:
+	friend class EngineCore;
+
 	GameComponent(entt::entity Entity);
 };
