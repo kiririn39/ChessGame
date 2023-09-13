@@ -4,7 +4,6 @@
 
 #include "EngineCore.h"
 #include "GameObjectTemplates.h"
-#include "Logger.h"
 #include "Components/IReceiveCollisionUpdates.h"
 #include "raymath.h"
 
@@ -33,7 +32,7 @@ auto CollisionsDetector::FindPairInActiveCollisions(CollisionBaseComponent* left
 
 void CollisionsDetector::UpdateCollisionsFor(std::vector<CollisionBaseComponent*> components)
 {
-    PreUpdateCollisions();
+    PreUpdateCollisions(components);
 
     for (int i = 0; i < components.size() - 1; i++)
     {
@@ -45,20 +44,15 @@ void CollisionsDetector::UpdateCollisionsFor(std::vector<CollisionBaseComponent*
             if (leftComponent == rightComponent)
                 continue;
 
-
             leftComponent->activeCollisionCount = 0;
             rightComponent->activeCollisionCount = 0;
-            Logger::LogPerformanceAccumulateFrameStart("hadCollisionPreviously");
 
             auto hadCollisionPreviously = FindPairInActiveCollisions(leftComponent, rightComponent);
-            Logger::LogPerformanceAccumulateFrameEnd("hadCollisionPreviously");
 
             if (!leftComponent->HasChangesSinceLastUpdate() && !rightComponent->HasChangesSinceLastUpdate())
             {
                 if (hadCollisionPreviously.has_value())
                 {
-                    Logger::LogPerformanceAccumulateFrameStart("Collision had no changes");
-
                     if (hadCollisionPreviously.value()->CollisionAction == &CollisionsDetector::NotifyOnEnterCollision)
                     {
                         hadCollisionPreviously.value()->CollisionAction = &CollisionsDetector::NotifyOnUpdateCollision;
@@ -74,13 +68,9 @@ void CollisionsDetector::UpdateCollisionsFor(std::vector<CollisionBaseComponent*
                     {
                         activeCollisions.erase(hadCollisionPreviously.value());
                     }
-
-                    Logger::LogPerformanceAccumulateFrameEnd("Collision had no changes");
-                    continue;
                 }
+                continue;
             }
-
-            Logger::LogPerformanceAccumulateFrameStart("IsInRadiusWith");
 
             if (!IsInRadius(leftComponent, rightComponent))
             {
@@ -92,10 +82,7 @@ void CollisionsDetector::UpdateCollisionsFor(std::vector<CollisionBaseComponent*
 
                 continue;
             }
-            Logger::LogPerformanceAccumulateFrameEnd("IsInRadiusWith");
 
-
-            Logger::LogPerformanceAccumulateFrameStart("DoesCollidesWith");
             if (leftComponent->DoesCollidesWith(rightComponent))
             {
                 if (hadCollisionPreviously.has_value())
@@ -112,21 +99,17 @@ void CollisionsDetector::UpdateCollisionsFor(std::vector<CollisionBaseComponent*
                 NotifyOnEnterCollision(leftComponent, rightComponent);
                 continue;
             }
-            Logger::LogPerformanceAccumulateFrameEnd("DoesCollidesWith");
 
-
-            Logger::LogPerformanceAccumulateFrameStart("Try NotifyOnExitCollision");
             if (hadCollisionPreviously.has_value())
             {
                 NotifyOnExitCollision(leftComponent, rightComponent);
                 activeCollisions.erase(hadCollisionPreviously.value());
             }
-            Logger::LogPerformanceAccumulateFrameEnd("Try NotifyOnExitCollision");
         }
     }
 }
 
-void CollisionsDetector::PreUpdateCollisions()
+void CollisionsDetector::PreUpdateCollisions(std::vector<CollisionBaseComponent*> components)
 {
     EngineCore* engine = EngineCore::GetInstance();
 
@@ -141,9 +124,11 @@ void CollisionsDetector::PreUpdateCollisions()
     {
         collision.FirstComponent->activeCollisionCount = 0;
         collision.SecondComponent->activeCollisionCount = 0;
+    }
 
-        collision.FirstComponent->RecalculateCachedValues();
-        collision.SecondComponent->RecalculateCachedValues();
+    for (auto component : components)
+    {
+        component->RecalculateCachedValues();
     }
 }
 

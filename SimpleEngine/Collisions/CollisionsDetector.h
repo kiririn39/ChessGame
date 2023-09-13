@@ -10,8 +10,8 @@ struct CollisionResult
     CollisionBaseComponent* FirstComponent;
     CollisionBaseComponent* SecondComponent;
 
-    void (CollisionsDetector::* CollisionAction)(CollisionBaseComponent* leftComponent,
-                                                 CollisionBaseComponent* rightComponent);
+    void (CollisionsDetector::*CollisionAction)(CollisionBaseComponent* leftComponent,
+                                                CollisionBaseComponent* rightComponent);
 };
 
 class CollisionsDetector
@@ -23,7 +23,7 @@ public:
     void UpdateCollisionsFor(std::vector<CollisionBaseComponent*> components);
 
 private:
-    void PreUpdateCollisions();
+    void PreUpdateCollisions(std::vector<CollisionBaseComponent*> components);
 
     auto FindPairInActiveCollisions(CollisionBaseComponent* leftComponent,
                                     CollisionBaseComponent* rightComponent) -> auto;

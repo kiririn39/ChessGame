@@ -1,6 +1,6 @@
 ﻿#include "Camera2dComponent.h"
 
-#include <boost/format.hpp>
+//#include <boost/format.hpp>
 #include "Logger.h"
 #include "TransformComponent.h"
 #include "raymath.hpp"
@@ -18,12 +18,12 @@ raylib::Camera2D Camera2dComponent::GetCamera()
 
 	if (transform == nullptr)
 	{
-		std::string
-				message = (boost::format(
-				"GameObject: %s Camera2dComponent can't work, Gameobject: %s has not TransformComponent\n")
-						   % OwnerObject->Name % OwnerObject->Name).str();
+//		std::string
+//				message = (boost::format(
+//				"GameObject: %s Camera2dComponent can't work, Gameobject: %s has not TransformComponent\n")
+//						   % OwnerObject->Name % OwnerObject->Name).str();
 
-		Logger::LogWithStackTrace(Level::LOG_WARNING, message);
+		//Logger::LogWithStackTrace(Level::LOG_WARNING, message);
 
 		return raylib::Camera2D();
 	}

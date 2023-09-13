@@ -5,14 +5,14 @@
 #pragma once
 
 #include <string>
-#include <boost/format.hpp>
+//#include <boost/format.hpp>
 
 namespace Engine
 {
 	template<typename... Args>
 	static inline std::string Format(const char* message, Args&& ... args)
 	{
-		return (boost::format(message) % ... % std::forward<Args>(args)).str();
+		return {};//(boost::format(message) % ... % std::forward<Args>(args)).str();
 	}
 
 	template<typename... Args>
