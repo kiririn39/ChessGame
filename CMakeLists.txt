@@ -27,9 +27,6 @@ if (NOT raylib_cpp_FOUND)
     FetchContent_MakeAvailable(raylib_cpp)
 endif()
 
-include_directories(${Boost_INCLUDE_DIRS})
-list(APPEND CMAKE_MODULE_PATH Backward)
-
 add_subdirectory(SimpleEngine)
 add_subdirectory(Game)
 target_link_libraries(${PROJECT_NAME} PUBLIC raylib raylib_cpp)

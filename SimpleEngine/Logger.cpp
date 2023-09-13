@@ -33,7 +33,7 @@ void Logger::LogWithStackTrace(Level level, const char* message)
 
 	if (level >= Level::LOG_DEBUG)
 	{
-		std::cout << Backward::GetStackTrace().str();
+		std::cout << message;
 		fflush(stdout);
 	}
 }
