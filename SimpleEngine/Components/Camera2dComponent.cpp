@@ -3,7 +3,7 @@
 //#include <boost/format.hpp>
 #include "Logger.h"
 #include "TransformComponent.h"
-#include "raymath.hpp"
+#include <raymath.h>
 
 void Camera2dComponent::OnInitialize()
 {
@@ -12,7 +12,7 @@ void Camera2dComponent::OnInitialize()
 	cameraOffset = Vector2Scale(windowSize, 0.5f);
 }
 
-raylib::Camera2D Camera2dComponent::GetCamera()
+Camera2D Camera2dComponent::GetCamera()
 {
 	auto* transform = GetOwner()->GetComponentOfType<TransformComponent>();
 
@@ -25,12 +25,12 @@ raylib::Camera2D Camera2dComponent::GetCamera()
 
 		//Logger::LogWithStackTrace(Level::LOG_WARNING, message);
 
-		return raylib::Camera2D();
+		return Camera2D();
 	}
 
 	const auto localPosition = transform->GetLocalPosition();
 
-	raylib::Camera2D camera;
+	Camera2D camera;
 	camera.offset = cameraOffset;
 	camera.zoom = zoom;
 	camera.rotation = transform->GetLocalRotation().z;

@@ -45,8 +45,8 @@ Vector2 EngineCore::GetWindowSize() const
 
 void EngineCore::Run()
 {
-    windowSize.x = 1280 * 2;
-    windowSize.y = 720 * 2;
+    windowSize.x = 1280;
+    windowSize.y = 720;
 
     InitWindow(windowSize.x, windowSize.y, "raylib [core] example - basic window");
 
