@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <cstddef>
 #include <array>
-#include <memory_resource>
+#include <vector>
 #include <unordered_map>
 #include <typeindex>
 
@@ -11,12 +11,11 @@ class MemoryPool
 {
 private:
     std::array<std::byte, 100000> buffer{};
-    std::pmr::monotonic_buffer_resource memoryResource{buffer.data(), buffer.max_size()};
-    std::pmr::unordered_map<std::type_index, void*> typesVectors{&memoryResource};
+    std::unordered_map<std::type_index, void*> typesVectors{};
 
 public:
-    std::pmr::vector<GameObjectComponent*> Components{&memoryResource};
-    std::pmr::vector<GameObject*> GameObjects{&memoryResource};
+    std::vector<GameObjectComponent*> Components{};
+    std::vector<GameObject*> GameObjects{};
 
     MemoryPool();
 

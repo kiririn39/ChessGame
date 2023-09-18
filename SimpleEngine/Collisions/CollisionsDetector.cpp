@@ -93,8 +93,8 @@ void CollisionsDetector::UpdateCollisionsFor(std::vector<CollisionBaseComponent*
                     continue;
                 }
 
-                activeCollisions.emplace_back(leftComponent, rightComponent,
-                                              &CollisionsDetector::NotifyOnEnterCollision);
+//                activeCollisions.emplace_back(leftComponent, rightComponent,
+//                                              &CollisionsDetector::NotifyOnEnterCollision);
 
                 NotifyOnEnterCollision(leftComponent, rightComponent);
                 continue;

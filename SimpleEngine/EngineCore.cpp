@@ -10,211 +10,240 @@
 #include "Components/CollisionBaseComponent.h"
 #include "Components/GameObjectComponent.h"
 #include "Components/UIComponent.h"
+#include "Components/TransformComponent.h"
+#include "Components/SpriteComponent.h"
 
 void EngineCore::UpdateCollisions()
 {
-    auto isCollisionComponent = std::views::filter([this](GameObjectComponent* component)
-    {
-        return IsValid(component) && dynamic_cast<CollisionBaseComponent*>(component) != nullptr;
-    });
-    auto toCollisionComponent = std::views::transform(
-        [](GameObjectComponent* component) -> CollisionBaseComponent* {
-            return dynamic_cast<CollisionBaseComponent*>(component);
-        });
+	auto isCollisionComponent = std::views::filter([this](GameObjectComponent* component)
+	{
+	  return IsValid(component) && dynamic_cast<CollisionBaseComponent*>(component) != nullptr;
+	});
+	auto toCollisionComponent = std::views::transform(
+		[](GameObjectComponent* component) -> CollisionBaseComponent*
+		{
+		  return dynamic_cast<CollisionBaseComponent*>(component);
+		});
 
-    static std::vector<CollisionBaseComponent*> collisionComponents;
-    collisionComponents.clear();
-    std::ranges::copy(pool.Components | isCollisionComponent | toCollisionComponent,
-                      std::back_inserter(collisionComponents));
+	static std::vector<CollisionBaseComponent*> collisionComponents;
+	collisionComponents.clear();
+	std::ranges::copy(pool.Components | isCollisionComponent | toCollisionComponent,
+		std::back_inserter(collisionComponents));
 
-    collisionsDetector.UpdateCollisionsFor(collisionComponents);
+	collisionsDetector.UpdateCollisionsFor(collisionComponents);
 }
 
 EngineCore* EngineCore::GetInstance()
 {
-    if (Instance == nullptr)
-        Instance = new EngineCore();
+	if (Instance == nullptr)
+		Instance = new EngineCore();
 
-    return Instance;
+	return Instance;
 }
 
 Vector2 EngineCore::GetWindowSize() const
 {
-    return windowSize;
+	return windowSize;
 }
 
 void EngineCore::Run()
 {
-    windowSize.x = 1280;
-    windowSize.y = 720;
+	windowSize.x = 1280;
+	windowSize.y = 720;
 
-    InitWindow(windowSize.x, windowSize.y, "raylib [core] example - basic window");
+	InitWindow(windowSize.x, windowSize.y, "raylib [core] example - basic window");
 
-    SetTargetFPS(GetMonitorRefreshRate(0));
+	SetTargetFPS(0);
 
-    while (!WindowShouldClose())
-    {
-        const float deltaTime = GetFrameTime();
+	while (!WindowShouldClose())
+	{
+		const float deltaTime = GetFrameTime();
 
-        auto isNotInitialized = std::views::filter([](const GameObjectComponent* component)
-        {
-            return !component->IsInitialized;
-        });
+		auto isNotInitialized = std::views::filter([](const GameObjectComponent* component)
+		{
+		  return !component->IsInitialized;
+		});
 
-        static std::vector<GameObjectComponent*> needsInitialization;
-        needsInitialization.clear();
-        std::ranges::copy(pool.Components | isNotInitialized, std::back_inserter(needsInitialization));
+		static std::vector<GameObjectComponent*> needsInitialization;
+		needsInitialization.clear();
+		std::ranges::copy(pool.Components | isNotInitialized, std::back_inserter(needsInitialization));
 
-        for (const auto component : needsInitialization)
-        {
-            component->IsInitialized = true;
-            component->OnInitialize();
-        }
+		for (const auto component : needsInitialization)
+		{
+			component->IsInitialized = true;
+			component->OnInitialize();
+		}
+		auto group = registry.group<TransformComponent>(entt::get<SpriteComponent>);
+		for (auto entity : group)
+		{
+			const auto& [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
 
-        UpdateCollisions();
+			if (!sprite.IsInitialized)
+				sprite.OnInitialize();
+		}
 
-        auto uiComponents = pool.Components | std::views::filter([](const GameObjectComponent* component)
-        {
-            return dynamic_cast<const UIComponent*>(component) != nullptr && component->IsInitialized;
-        });
+		UpdateCollisions();
 
-        auto standartComponetns = pool.Components | std::views::filter([](const GameObjectComponent* component)
-        {
-            return dynamic_cast<const UIComponent*>(component) == nullptr && component->IsInitialized;
-        });
+		auto uiComponents = pool.Components | std::views::filter([](const GameObjectComponent* component)
+		{
+		  return dynamic_cast<const UIComponent*>(component) != nullptr && component->IsInitialized;
+		});
 
-        Camera2D camera{};
+		auto standartComponetns = pool.Components | std::views::filter([](const GameObjectComponent* component)
+		{
+		  return dynamic_cast<const UIComponent*>(component) == nullptr && component->IsInitialized;
+		});
 
-        auto match = std::ranges::find_if(pool.Components, [](const GameObjectComponent* component)
-        {
-            return dynamic_cast<const Camera2dComponent*>(component) != nullptr;
-        });
+		Camera2D camera{};
 
-        if (match != pool.Components.end())
-            camera = static_cast<Camera2dComponent*>(*match)->GetCamera();
-        else
-            Logger::LogWithStackTrace(Level::LOG_WARNING, std::format("Couldn't find any Camera2dComponent\n"));
+		auto match = std::ranges::find_if(pool.Components, [](const GameObjectComponent* component)
+		{
+		  return dynamic_cast<const Camera2dComponent*>(component) != nullptr;
+		});
 
-        BeginDrawing();
+		if (match != pool.Components.end())
+			camera = static_cast<Camera2dComponent*>(*match)->GetCamera();
+		//else
+			//Logger::LogWithStackTrace(Level::LOG_WARNING, std::format("Couldn't find any Camera2dComponent\n"));
 
-        ClearBackground(RAYWHITE);
-        BeginMode2D(camera);
+		BeginDrawing();
 
-        DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+		ClearBackground(RAYWHITE);
+		BeginMode2D(camera);
 
-        for (const auto component : standartComponetns)
-            component->OnUpdate(deltaTime);
+		DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
 
-        auto renderComponetns = pool.Components | std::views::filter([](GameObjectComponent* component)
-        {
-            return dynamic_cast<IRenderComponent*>(component) != nullptr && component->IsInitialized;
-        }) | std::views::transform([](GameObjectComponent* component)
-        {
-            return dynamic_cast<IRenderComponent*>(component);
-        });
+		for (const auto component : standartComponetns)
+			component->OnUpdate(deltaTime);
 
-        for (IRenderComponent* component : renderComponetns)
-            renderer.AddRenderComponent(component);
+		auto renderComponetns = pool.Components | std::views::filter([](GameObjectComponent* component)
+		{
+		  return dynamic_cast<IRenderComponent*>(component) != nullptr && component->IsInitialized;
+		}) | std::views::transform([](GameObjectComponent* component)
+		{
+		  return dynamic_cast<IRenderComponent*>(component);
+		});
 
-        renderer.Render();
-        EndMode2D();
+		for (IRenderComponent* component : renderComponetns)
+			renderer.AddRenderComponent(component);
 
-        for (const auto component : uiComponents)
-            component->OnUpdate(deltaTime);
+		renderer.Render();
+		auto group1 = registry.group<TransformComponent>(entt::get<SpriteComponent>);
 
-        for (IRenderComponent* component : renderComponetns)
-            renderer.AddRenderComponent(component);
+		for (auto entity : group1)
+		{
+			const auto& [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
 
-        EndDrawing();
+			sprite.Render(&transform);
+		}
 
-        DestroyObjects();
-    }
+		EndMode2D();
 
-    CloseWindow();
+		for (const auto component : uiComponents)
+			component->OnUpdate(deltaTime);
+
+		for (IRenderComponent* component : renderComponetns)
+			renderer.AddRenderComponent(component);
+
+		EndDrawing();
+
+		DestroyObjects();
+	}
+
+	CloseWindow();
 }
 
 GameObject* EngineCore::CreateGameObject()
 {
-    GameObject* instance = pool.CreateObjectOfType<GameObject>();
+	GameObject* instance = pool.CreateObjectOfType<GameObject>();
 
-    return instance;
+	return instance;
 }
 
 GameObject* EngineCore::CreateGameObject(const std::string& name)
 {
-    auto instance = CreateGameObject();
-    instance->Name = name;
+	auto instance = CreateGameObject();
+	instance->Name = name;
 
-    return instance;
+	return instance;
 }
 
 void EngineCore::DestroyObjects()
 {
-    auto IsFlaggedComponent = std::views::filter([](const GameObjectComponent* component)
-    {
-        return component->IsFlaggedForDestruction;
-    });
+	auto IsFlaggedComponent = std::views::filter([](const GameObjectComponent* component)
+	{
+	  return component->IsFlaggedForDestruction;
+	});
 
-    auto IsEmptyGameobject = std::views::filter([](const GameObject* gameObject)
-    {
-        return gameObject->ComponentsCount <= 0;
-    });
+	auto IsEmptyGameobject = std::views::filter([](const GameObject* gameObject)
+	{
+	  return gameObject->ComponentsCount <= 0;
+	});
 
-    auto flaggedComponentsView = pool.Components | IsFlaggedComponent;
-    std::vector<GameObjectComponent*> flaggedComponents{flaggedComponentsView.begin(), flaggedComponentsView.end()};
+	auto flaggedComponentsView = pool.Components | IsFlaggedComponent;
+	std::vector<GameObjectComponent*> flaggedComponents{ flaggedComponentsView.begin(), flaggedComponentsView.end() };
 
-    for (GameObjectComponent* component : flaggedComponents)
-    {
-        component->GetOwner()->ComponentsCount--;
-        component->OnDestroy();
-    }
+	for (GameObjectComponent* component : flaggedComponents)
+	{
+		component->GetOwner()->ComponentsCount--;
+		component->OnDestroy();
+	}
 
-    for (auto component : flaggedComponents)
-        pool.Invalidate(component);
+	for (auto component : flaggedComponents)
+		pool.Invalidate(component);
 
-    auto emptyGameobjectsView = pool.GameObjects | IsEmptyGameobject;
-    std::vector<GameObject*> emptyGameobjects{emptyGameobjectsView.begin(), emptyGameobjectsView.end()};
+	auto emptyGameobjectsView = pool.GameObjects | IsEmptyGameobject;
+	std::vector<GameObject*> emptyGameobjects{ emptyGameobjectsView.begin(), emptyGameobjectsView.end() };
 
-    for (auto gameobject : emptyGameobjects)
-        pool.Invalidate(gameobject);
+	for (auto gameobject : emptyGameobjects)
+		pool.Invalidate(gameobject);
 }
 
 bool EngineCore::IsValid(GameObject* object) const
 {
-    return object != nullptr && !object->IsInvalid();
+	return object != nullptr && !object->IsInvalid();
 }
 
 bool EngineCore::IsValid(GameObjectComponent* component)
 {
-    if (component == nullptr)
-        return false;
+	if (component == nullptr)
+		return false;
 
-    return component->IsValid();
+	return component->IsValid();
 }
 
 void EngineCore::Destroy(GameObject* object)
 {
-    if (!IsValid(object))
-        return;
+	if (!IsValid(object))
+		return;
 
-    auto markedForDestroy = pool.Components | std::views::filter([object](const GameObjectComponent* component)
-    {
-        return component->GetOwner() == object;
-    });
+	auto markedForDestroy = pool.Components | std::views::filter([object](const GameObjectComponent* component)
+	{
+	  return component->GetOwner() == object;
+	});
 
-    for (auto component : markedForDestroy)
-        component->Destroy();
+	for (auto component : markedForDestroy)
+		component->Destroy();
 
-    for (auto child : object->Children)
-        Destroy(child);
+	for (auto child : object->Children)
+		Destroy(child);
 }
 
 size_t EngineCore::GetComponentsCount() const
 {
-    return pool.Components.size();
+	return pool.Components.size();
 }
 
 size_t EngineCore::GetGameObjectsCount() const
 {
-    return pool.GameObjects.size();
+	return pool.GameObjects.size();
+}
+
+entt::entity EngineCore::CreateEntity()
+{
+	auto entity = registry.create();
+
+	registry.emplace<TransformComponent>(entity);
+
+	return entity;
 }

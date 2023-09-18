@@ -3,14 +3,8 @@ project(SimpleEngine)
 
 set(CMAKE_CXX_STANDARD 20)
 
-include(FetchContent)
-
-FetchContent_Declare(
-        entt
-        GIT_REPOSITORY https://github.com/skypjack/entt.git
-        GIT_TAG v3.10.0
-)
-FetchContent_MakeAvailable(entt)
+add_subdirectory(Dependencies/entt-3.12.2)
+add_subdirectory(Dependencies/raylib-4.5.0)
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
 

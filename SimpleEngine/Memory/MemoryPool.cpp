@@ -1,6 +1,7 @@
 ﻿#include "MemoryPool.h"
 
 #include "GameObject.h"
+#include "vector"
 #include <algorithm>
 
 MemoryPool::MemoryPool()
@@ -14,14 +15,16 @@ void MemoryPool::Invalidate(GameObjectComponent* instance)
 {
 	instance->IsInvalid = true;
 
-	auto newEnd = std::remove(Components.begin(), Components.end(), instance);
-	Components.erase(newEnd, Components.end());
+	erase_if(Components, [instance](GameObjectComponent* item)
+	{
+	  return item == instance;
+	});
 }
 
 void MemoryPool::Invalidate(GameObject* instance)
 {
-	instance->isInvalid = true;
-
-	auto newEnd = std::remove(GameObjects.begin(), GameObjects.end(), instance);
-	GameObjects.erase(newEnd, GameObjects.end());
+	erase_if(GameObjects, [instance](GameObject* item)
+	{
+	  return item == instance;
+	});
 }

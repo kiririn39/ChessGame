@@ -17,24 +17,14 @@ class GameObjectComponent;
 
 class EngineCore
 {
-private:
-	Vector2 windowSize{};
-	Renderer renderer{};
-	MemoryPool pool{};
-	CollisionsDetector collisionsDetector{};
-	entt::registry registry;
-
-	inline static EngineCore* Instance = nullptr;
-
-	entt::dense_map<entt::entity, entt::type_info> OnCreateComponents;
-	entt::dense_map<entt::entity, entt::type_info> OnUpdateComponents;
-	entt::dense_map<entt::entity, entt::type_info> OnDestroyComponents;
-public:
+ public:
 	static EngineCore* GetInstance();
 
 	Vector2 GetWindowSize() const;
 
 	void Run();
+
+	entt::entity CreateEntity();
 
 	GameObject* CreateGameObject();
 
@@ -56,9 +46,9 @@ public:
 
 	void Destroy(GameObject* object);
 
-	[[nodiscard]] size_t GetComponentsCount() const;
+	size_t GetComponentsCount() const;
 
-	[[nodiscard]] size_t GetGameObjectsCount() const;
+	size_t GetGameObjectsCount() const;
 
 	template<typename T>
 	void SubscribeToOnCreate(GameEntity entity);
@@ -94,10 +84,25 @@ public:
 
 	GameEntity CreateGameEntity();
 
-private:
+ private:
 	EngineCore() = default;
 
 	void DestroyObjects();
 
 	void UpdateCollisions();
+
+ public:
+	entt::registry registry;
+
+ private:
+	Vector2 windowSize{};
+	Renderer renderer{};
+	MemoryPool pool{};
+	CollisionsDetector collisionsDetector{};
+
+	inline static EngineCore* Instance = nullptr;
+
+	entt::dense_map<entt::entity, entt::type_info> OnCreateComponents;
+	entt::dense_map<entt::entity, entt::type_info> OnUpdateComponents;
+	entt::dense_map<entt::entity, entt::type_info> OnDestroyComponents;
 };

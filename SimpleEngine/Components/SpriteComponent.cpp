@@ -8,21 +8,21 @@
 
 void SpriteComponent::FreeAllTextureData()
 {
-	UnloadTexture(texture);
+	UnloadTexture(gpuTexture);
 
-	if (preLoadedTextureData.data != nullptr)
-		UnloadImage(preLoadedTextureData);
+	if (cpuTexture.data != nullptr)
+		UnloadImage(cpuTexture);
 }
 
 void SpriteComponent::FinishTextureLoading()
 {
-	if (preLoadedTextureData.data == nullptr)
+	if (cpuTexture.data == nullptr)
 		return;
 
-	texture = LoadTextureFromImage(preLoadedTextureData);
+	gpuTexture = LoadTextureFromImage(cpuTexture);
 
-	UnloadImage(preLoadedTextureData);
-	preLoadedTextureData.data = nullptr;
+	UnloadImage(cpuTexture);
+	cpuTexture.data = nullptr;
 }
 
 void SpriteComponent::LoadSpriteFromPath(const char* path)
@@ -30,19 +30,20 @@ void SpriteComponent::LoadSpriteFromPath(const char* path)
 	if (!FileExists(path))
 	{
 		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
-				"GameObject: %s SpriteComponent can't work, Can't load a texture from given path as it doesn't exist: %s\n",
-				OwnerObject->Name, path));
+			"GameObject: %s SpriteComponent can't work, Can't load a texture from given path as it doesn't exist: %s\n",
+			OwnerObject->Name,
+			path));
 		return;
 	}
 
 	FreeAllTextureData();
 
-	preLoadedTextureData = LoadImage(path);
+	cpuTexture = LoadImage(path);
 
-	texture.width = preLoadedTextureData.width;
-	texture.height = preLoadedTextureData.height;
-	texture.format = preLoadedTextureData.format;
-	texture.mipmaps = preLoadedTextureData.mipmaps;
+	gpuTexture.width = cpuTexture.width;
+	gpuTexture.height = cpuTexture.height;
+	gpuTexture.format = cpuTexture.format;
+	gpuTexture.mipmaps = cpuTexture.mipmaps;
 
 	if (IsInitialized)
 		FinishTextureLoading();
@@ -50,7 +51,7 @@ void SpriteComponent::LoadSpriteFromPath(const char* path)
 
 Vector2 SpriteComponent::GetSpriteSize() const
 {
-	return Vector2(texture.width, texture.height);
+	return Vector2{ (float)gpuTexture.width, (float)gpuTexture.height };
 }
 
 void SpriteComponent::OnInitialize()
@@ -75,11 +76,11 @@ int SpriteComponent::GetRenderOrder() const
 
 void SpriteComponent::Render()
 {
-	if (texture.id == 0)
+	if (gpuTexture.id == 0)
 	{
 		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
-				"GameObject: %s SpriteComponent can't work, texture id == 0\n",
-				OwnerObject->Name));
+			"GameObject: %s SpriteComponent can't work, texture id == 0\n",
+			OwnerObject->Name));
 
 		return;
 	}
@@ -89,15 +90,15 @@ void SpriteComponent::Render()
 	if (transform == nullptr)
 	{
 		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
-				"GameObject: %s SpriteComponent can't work, Gameobject: %s has not TransformComponent\n",
-				OwnerObject->Name, OwnerObject->Name));
+			"GameObject: %s SpriteComponent can't work, Gameobject: %s has not TransformComponent\n",
+			OwnerObject->Name, OwnerObject->Name));
 		return;
 	}
 
 	Vector3 scale = transform->GetLocalScale();
 	Vector3 localPosition = transform->GetLocalPosition();
 
-	Rectangle originRect = Rectangle{ 0, 0, (float)texture.width, (float)texture.height };
+	Rectangle originRect = Rectangle{ 0, 0, (float)gpuTexture.width, (float)gpuTexture.height };
 	Rectangle destinationRect = originRect;
 
 	destinationRect.width *= scale.x;
@@ -105,5 +106,30 @@ void SpriteComponent::Render()
 	destinationRect.x = localPosition.x + Offset.x;
 	destinationRect.y = localPosition.y + Offset.y;
 
-	DrawTexturePro(texture, originRect, destinationRect, Vector2Zero(), transform->GetLocalRotation().z, WHITE);
+	DrawTexturePro(gpuTexture, originRect, destinationRect, Vector2Zero(), transform->GetLocalRotation().z, WHITE);
+}
+
+void SpriteComponent::Render(TransformComponent* transform)
+{
+	if (gpuTexture.id == 0)
+	{
+		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
+			"GameObject: %s SpriteComponent can't work, texture id == 0\n",
+			OwnerObject->Name));
+
+		return;
+	}
+
+	Vector3 scale = transform->GetLocalScale();
+	Vector3 localPosition = transform->GetLocalPosition();
+
+	Rectangle originRect = Rectangle{ 0, 0, (float)gpuTexture.width, (float)gpuTexture.height };
+	Rectangle destinationRect = originRect;
+
+	destinationRect.width *= scale.x;
+	destinationRect.height *= scale.y;
+	destinationRect.x = localPosition.x + Offset.x;
+	destinationRect.y = localPosition.y + Offset.y;
+
+	DrawTexturePro(gpuTexture, originRect, destinationRect, Vector2Zero(), transform->GetLocalRotation().z, WHITE);
 }

@@ -47,5 +47,11 @@ int main()
 
 	auto halfSprite = Vector2Scale(spriteComponent->GetSpriteSize(), 0.5f);
 	cameraTransform->SetLocalPosition({ halfSprite.x, halfSprite.y, 0 });
+
+	auto entity = engine->CreateEntity();
+	engine->registry.get<TransformComponent>(entity).SetLocalPosition({ -90, -20, 0 });
+
+	SpriteComponent& sprite = engine->registry.emplace<SpriteComponent>(entity);
+	sprite.LoadSpriteFromPath(GetPieceSpriteAssetPath(ChessPieceType::Rook, ChessPieceColor::Black));
 	engine->Run();
 }
