@@ -7,7 +7,6 @@
 #include "Logger.h"
 #include "Components/TransformComponent.h"
 #include "Input/Input.h"
-#include "Utilities/Format.h"
 
 void KeyboardMovementComponent::OnUpdate(float deltaTime)
 {
@@ -15,9 +14,10 @@ void KeyboardMovementComponent::OnUpdate(float deltaTime)
 
     if (transform == nullptr)
     {
-        Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
-                                      "KeyboardMovementComponent can't work, Gameobject: %s has not TransformComponent\n",
-                                      OwnerObject->Name));
+//        Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
+//                                      "KeyboardMovementComponent can't work, Gameobject: %s has not TransformComponent\n",
+//                                      OwnerObject->Name));
+		assert(false);
         return;
     }
 

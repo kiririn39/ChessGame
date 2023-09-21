@@ -8,8 +8,6 @@
 #include <vector>
 
 #include "raylib.h"
-#include "Utilities/Backward.h"
-#include "Utilities/Format.h"
 
 
 void Logger::Log(Level level, const std::string&& message)
@@ -52,16 +50,16 @@ void Logger::LogPerformanceEnd(const char* message, TimePrecision precision, Lev
 	std::string str;
 	str.append(message);
 
-	if (precision == TimePrecision::Seconds)
-		str.append(Engine::Format(" : %f",
-				std::chrono::duration_cast<std::chrono::seconds>(end - performanceTimeStarts.back())));
-	else if (precision == TimePrecision::Milliseconds)
-		str.append(Engine::Format(" : %f",
-				std::chrono::duration_cast<std::chrono::milliseconds>(end - performanceTimeStarts.back())));
-	else if (precision == TimePrecision::Microseconds)
-		str.append(Engine::Format(" : %f",
-				std::chrono::duration_cast<std::chrono::microseconds>(end - performanceTimeStarts.back())));
-	else
+//	if (precision == TimePrecision::Seconds)
+//		str.append(Engine::Format(" : %f",
+//				std::chrono::duration_cast<std::chrono::seconds>(end - performanceTimeStarts.back())));
+//	else if (precision == TimePrecision::Milliseconds)
+//		str.append(Engine::Format(" : %f",
+//				std::chrono::duration_cast<std::chrono::milliseconds>(end - performanceTimeStarts.back())));
+//	else if (precision == TimePrecision::Microseconds)
+//		str.append(Engine::Format(" : %f",
+//				std::chrono::duration_cast<std::chrono::microseconds>(end - performanceTimeStarts.back())));
+//	else
 		assert(false);
 
 	performanceTimeStarts.pop_back();
@@ -89,16 +87,16 @@ void Logger::LogPerformanceAccumulatedEnd(const std::string& key, TimePrecision 
 	std::string str;
 	str.append(key);
 
-	if (precision == TimePrecision::Seconds)
-		str.append(
-				Engine::Format(" : %f", std::chrono::duration_cast<std::chrono::seconds>(accumulatedPerformance[key])));
-	else if (precision == TimePrecision::Milliseconds)
-		str.append(Engine::Format(
-				" : %f", std::chrono::duration_cast<std::chrono::milliseconds>(accumulatedPerformance[key])));
-	else if (precision == TimePrecision::Microseconds)
-		str.append(Engine::Format(
-				" : %f", std::chrono::duration_cast<std::chrono::microseconds>(accumulatedPerformance[key])));
-	else
+//	if (precision == TimePrecision::Seconds)
+//		str.append(
+//				Engine::Format(" : %f", std::chrono::duration_cast<std::chrono::seconds>(accumulatedPerformance[key])));
+//	else if (precision == TimePrecision::Milliseconds)
+//		str.append(Engine::Format(
+//				" : %f", std::chrono::duration_cast<std::chrono::milliseconds>(accumulatedPerformance[key])));
+//	else if (precision == TimePrecision::Microseconds)
+//		str.append(Engine::Format(
+//				" : %f", std::chrono::duration_cast<std::chrono::microseconds>(accumulatedPerformance[key])));
+//	else
 		assert(false);
 
 	Log(logLevel, std::move(str));

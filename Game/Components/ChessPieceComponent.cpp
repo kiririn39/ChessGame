@@ -3,7 +3,6 @@
 #include "GameObjectTemplates.h"
 #include "Logger.h"
 #include "Components/SpriteComponent.h"
-#include "Utilities/Format.h"
 #include <raymath.h>
 
 void ChessPieceComponent::InitializePiece(ChessPieceColor Color, ChessPieceType Type)
@@ -15,9 +14,11 @@ void ChessPieceComponent::InitializePiece(ChessPieceColor Color, ChessPieceType 
 
 	if (spriteComponent == nullptr)
 	{
-		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format("Gameobject: %s ChessPieceComponent"
-																	 " requires SpriteComponent but could not find one",
-				OwnerObject->Name));
+//		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format("Gameobject: %s ChessPieceComponent"
+//																	 " requires SpriteComponent but could not find one",
+//				OwnerObject->Name));
+		assert(false);
+
 		return;
 	}
 

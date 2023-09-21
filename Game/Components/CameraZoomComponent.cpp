@@ -3,7 +3,6 @@
 #include "Logger.h"
 #include "Components/Camera2dComponent.h"
 #include "Input/Input.h"
-#include "Utilities/Format.h"
 
 void CameraZoomComponent::OnUpdate(float deltaTime)
 {
@@ -11,9 +10,11 @@ void CameraZoomComponent::OnUpdate(float deltaTime)
 
     if (camera == nullptr)
     {
-        Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
-                                      "CameraZoomComponent can't work, Gameobject: %s has not Camera2dComponent\n",
-                                      OwnerObject->Name));
+//        Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
+//                                      "CameraZoomComponent can't work, Gameobject: %s has not Camera2dComponent\n",
+//                                      OwnerObject->Name));
+		assert(false);
+
         return;
     }
 

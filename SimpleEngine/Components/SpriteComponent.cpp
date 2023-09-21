@@ -3,7 +3,6 @@
 #include "GameObjectTemplates.h"
 #include "raymath.h"
 #include "TransformComponent.h"
-#include "Utilities/Format.h"
 #include "Logger.h"
 
 void SpriteComponent::FreeAllTextureData()
@@ -29,10 +28,12 @@ void SpriteComponent::LoadSpriteFromPath(const char* path)
 {
 	if (!FileExists(path))
 	{
-		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
-			"GameObject: %s SpriteComponent can't work, Can't load a texture from given path as it doesn't exist: %s\n",
-			OwnerObject->Name,
-			path));
+//		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
+//			"GameObject: %s SpriteComponent can't work, Can't load a texture from given path as it doesn't exist: %s\n",
+//			OwnerObject->Name,
+//			path));
+		assert(false);
+
 		return;
 	}
 
@@ -78,9 +79,10 @@ void SpriteComponent::Render()
 {
 	if (gpuTexture.id == 0)
 	{
-		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
-			"GameObject: %s SpriteComponent can't work, texture id == 0\n",
-			OwnerObject->Name));
+//		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
+//			"GameObject: %s SpriteComponent can't work, texture id == 0\n",
+//			OwnerObject->Name));
+		assert(false);
 
 		return;
 	}
@@ -89,9 +91,11 @@ void SpriteComponent::Render()
 
 	if (transform == nullptr)
 	{
-		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
-			"GameObject: %s SpriteComponent can't work, Gameobject: %s has not TransformComponent\n",
-			OwnerObject->Name, OwnerObject->Name));
+//		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
+//			"GameObject: %s SpriteComponent can't work, Gameobject: %s has not TransformComponent\n",
+//			OwnerObject->Name, OwnerObject->Name));
+		assert(false);
+
 		return;
 	}
 
@@ -113,9 +117,10 @@ void SpriteComponent::Render(TransformComponent* transform)
 {
 	if (gpuTexture.id == 0)
 	{
-		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
-			"GameObject: %s SpriteComponent can't work, texture id == 0\n",
-			OwnerObject->Name));
+//		Logger::LogWithStackTrace(Level::LOG_WARNING, Engine::Format(
+//			"GameObject: %s SpriteComponent can't work, texture id == 0\n",
+//			OwnerObject->Name));
+		assert(false);
 
 		return;
 	}

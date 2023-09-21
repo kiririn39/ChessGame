@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include "GameObjectTemplates.h"
 #include "Components/Camera2dComponent.h"
 #include "Components/CameraStatsComponent.h"
@@ -12,7 +13,7 @@
 #include "Components/TransformComponent.h"
 #include "raymath.h"
 #include "ChessGameGeneral.h"
-
+ 
 int main()
 {
 	const auto engine = EngineCore::GetInstance();
