@@ -4,7 +4,6 @@
 #include <ranges>
 
 #include "EngineCore.h"
-#include "Utilities/Format.h"
 #include "Logger.h"
 
 bool GameObject::IsInvalid()
@@ -21,8 +20,9 @@ void GameObject::AddChildGameObject(GameObject* object)
 {
 	if (object == nullptr)
 	{
-		Logger::LogWithStackTrace(Level::LOG_WARNING,
-				Engine::Format("Gameobject: %s you are trying to add null child", Name));
+//		Logger::LogWithStackTrace(Level::LOG_WARNING,
+//				Engine::Format("Gameobject: %s you are trying to add null child", Name));
+		assert(false);
 		return;
 	}
 
@@ -40,8 +40,10 @@ void GameObject::RemoveChildGameObject(GameObject* object)
 {
 	if (object == nullptr)
 	{
-		Logger::LogWithStackTrace(Level::LOG_WARNING,
-				Engine::Format("Gameobject: %s you are trying to remove null child", Name));
+//		Logger::LogWithStackTrace(Level::LOG_WARNING,
+//				Engine::Format("Gameobject: %s you are trying to remove null child", Name));
+		assert(false);
+		
 		return;
 	}
 
