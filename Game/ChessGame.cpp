@@ -2,6 +2,7 @@
 
 
 #include "GameObjectTemplates.h"
+#include "GameEntities/GameEntityTemplates.h"
 #include "Components/Camera2dComponent.h"
 #include "Components/CameraStatsComponent.h"
 #include "Components/CameraZoomComponent.h"
@@ -49,10 +50,10 @@ int main()
 	auto halfSprite = Vector2Scale(spriteComponent->GetSpriteSize(), 0.5f);
 	cameraTransform->SetLocalPosition({ halfSprite.x, halfSprite.y, 0 });
 
-	auto entity = engine->CreateEntity();
-	engine->registry.get<TransformComponent>(entity).SetLocalPosition({ -90, -20, 0 });
-
-	SpriteComponent& sprite = engine->registry.emplace<SpriteComponent>(entity);
+	GameEntity entity = engine->CreateEntity();
+	entity.GetComponent<TransformComponent>().SetLocalPosition({ -90, -20, 0 });
+	
+	SpriteComponent& sprite = entity.AddComponent<SpriteComponent>();
 	sprite.LoadSpriteFromPath(GetPieceSpriteAssetPath(ChessPieceType::Rook, ChessPieceColor::Black));
 	engine->Run();
 }

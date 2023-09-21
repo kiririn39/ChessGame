@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <type_traits>
 #include <vector>
 #include <entt.hpp>
@@ -23,7 +24,7 @@ class EngineCore
 
 	void Run();
 
-	entt::entity CreateEntity();
+	GameEntity CreateEntity(const std::string& name = "");
 
 	GameObject* CreateGameObject();
 
@@ -80,8 +81,6 @@ class EngineCore
 
 	template<typename T>
 	bool IsValid(GameEntity entity);
-
-	GameEntity CreateGameEntity();
 
  private:
 	EngineCore() = default;

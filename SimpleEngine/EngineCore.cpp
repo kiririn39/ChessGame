@@ -1,7 +1,6 @@
 #include "EngineCore.h"
 
 #include <algorithm>
-#include <format>
 #include <ranges>
 #include "GameObject.h"
 #include "Logger.h"
@@ -12,6 +11,9 @@
 #include "Components/UIComponent.h"
 #include "Components/TransformComponent.h"
 #include "Components/SpriteComponent.h"
+#include "Components/TagComponent.h"
+#include "GameEntities/GameEntityTemplates.h"
+
 
 void EngineCore::UpdateCollisions()
 {
@@ -104,7 +106,7 @@ void EngineCore::Run()
 		if (match != pool.Components.end())
 			camera = static_cast<Camera2dComponent*>(*match)->GetCamera();
 		//else
-			//Logger::LogWithStackTrace(Level::LOG_WARNING, std::format("Couldn't find any Camera2dComponent\n"));
+		//Logger::LogWithStackTrace(Level::LOG_WARNING, std::format("Couldn't find any Camera2dComponent\n"));
 
 		BeginDrawing();
 
@@ -239,11 +241,17 @@ size_t EngineCore::GetGameObjectsCount() const
 	return pool.GameObjects.size();
 }
 
-entt::entity EngineCore::CreateEntity()
+GameEntity EngineCore::CreateEntity(const std::string& name)
 {
-	auto entity = registry.create();
+	GameEntity entity = registry.create();
 
-	registry.emplace<TransformComponent>(entity);
+	entity.AddComponent<TransformComponent>();
+	auto tag = entity.AddComponent<TagComponent>();
+
+	if (tag.Tag.empty())
+		tag.Tag = "Unnamed entity";
+	else
+		tag.Tag = name;
 
 	return entity;
 }
