@@ -7,5 +7,5 @@
 
 bool GameEntity::IsValid()
 {
-	return EngineCore::GetInstance()->IsValid(*this);
+	return EngineCore::GetInstance()->registry.valid(_entity);
 }
